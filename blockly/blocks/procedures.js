@@ -60,6 +60,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     this.setStatements_(true);
     this.statementConnection_ = null;
   },
+  canBeRoot: true,
   /**
    * Initialization of the block has completed, clean up anything that may be
    * inconsistent as a result of the XML loading.
@@ -428,6 +429,7 @@ Blockly.Blocks['procedures_defreturn'] = {
   getProcedureDef: function() {
     return [this.getFieldValue('NAME'), this.arguments_, true];
   },
+  canBeRoot: true,
   getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
   renameVar: Blockly.Blocks['procedures_defnoreturn'].renameVar,
   customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu,

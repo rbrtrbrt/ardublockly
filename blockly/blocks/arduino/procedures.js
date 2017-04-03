@@ -37,5 +37,6 @@ Blockly.Blocks['arduino_functions'] = {
   /** @return {!boolean} True if the block instance is in the workspace. */
   getArduinoLoopsInstance: function() {
     return true;
-  }
+  },
+  canBeRoot: true
 };

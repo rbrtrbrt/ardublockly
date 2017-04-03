@@ -57,6 +57,8 @@ Ardublockly.injectBlockly = function(blocklyEl, toolboxXml, blocklyPath) {
         scaleSpeed: 1.2
       }
   });
+  var initialBlock = '<xml><block type="arduino_functions" x="109" y="64"></block></xml>';
+  Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(initialBlock), Ardublockly.workspace);
   // On language change the blocks have been stored in session storage
   Ardublockly.loadSessionStorageBlocks();
 };

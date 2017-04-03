@@ -114,6 +114,14 @@ Blockly.Arduino.init = function(workspace) {
     Blockly.Arduino.variableDB_.reset();
   }
 
+  var allBlocks = workspace.getAllBlocks();
+  allBlocks.forEach( b => {
+     if(b.updateWarnings) {
+        b.updateWarnings()
+     }
+     b.setDisabled( ! b.getRootBlock().canBeRoot);
+  });
+
   // Iterate through to capture all blocks types and set the function arguments
   var varsWithTypes = Blockly.Arduino.StaticTyping.collectVarsWithTypes(workspace);
   Blockly.Arduino.StaticTyping.setProcedureArgs(workspace, varsWithTypes);

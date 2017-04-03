@@ -24,7 +24,7 @@ goog.require('Blockly.Arduino');
  */
 Blockly.Arduino['controls_repeat'] = function(block) {
   var repeats = Number(block.getFieldValue('TIMES'));
-  var branch = Blockly.Arduino.statementToCode(block, 'DO');
+  var branch = Blockly.Arduino.statementToCppBlock(block, 'DO');
   branch = Blockly.Arduino.addLoopTrap(branch, block.id);
   var loopVar = Blockly.Arduino.variableDB_.getDistinctName(
       'count', Blockly.Variables.NAME_TYPE);
@@ -45,7 +45,7 @@ Blockly.Arduino['controls_repeat'] = function(block) {
 Blockly.Arduino['controls_repeat_ext'] = function(block) {
   var repeats = Blockly.Arduino.valueToCode(block, 'TIMES',
       Blockly.Arduino.ORDER_ADDITIVE) || '0';
-  var branch = Blockly.Arduino.statementToCode(block, 'DO');
+  var branch = Blockly.Arduino.statementToCppBlock(block, 'DO');
   branch = Blockly.Arduino.addLoopTrap(branch, block.id);
   var code = '';
   var loopVar = Blockly.Arduino.variableDB_.getDistinctName(
@@ -75,7 +75,7 @@ Blockly.Arduino['controls_whileUntil'] = function(block) {
   var argument0 = Blockly.Arduino.valueToCode(block, 'BOOL',
       until ? Blockly.Arduino.ORDER_LOGICAL_OR :
       Blockly.Arduino.ORDER_NONE) || 'false';
-  var branch = Blockly.Arduino.statementToCode(block, 'DO');
+  var branch = Blockly.Arduino.statementToCppBlock(block, 'DO');
   branch = Blockly.Arduino.addLoopTrap(branch, block.id);
   if (until) {
     if (!argument0.match(/^\w+$/)) {
@@ -101,7 +101,7 @@ Blockly.Arduino['controls_for'] = function(block) {
       Blockly.Arduino.ORDER_ASSIGNMENT) || '0';
   var increment = Blockly.Arduino.valueToCode(block, 'BY',
       Blockly.Arduino.ORDER_ASSIGNMENT) || '1';
-  var branch = Blockly.Arduino.statementToCode(block, 'DO');
+  var branch = Blockly.Arduino.statementToCppBlock(block, 'DO');
   branch = Blockly.Arduino.addLoopTrap(branch, block.id);
   var code;
   if (Blockly.isNumber(argument0) && Blockly.isNumber(argument1) &&

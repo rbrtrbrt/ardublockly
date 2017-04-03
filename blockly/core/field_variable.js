@@ -89,11 +89,12 @@ Blockly.FieldVariable.prototype.init = function() {
   Blockly.FieldVariable.superClass_.init.call(this);
   if (!this.getValue()) {
     // Variables without names get uniquely named for this workspace.
-    var workspace =
-        this.sourceBlock_.isInFlyout ?
-            this.sourceBlock_.workspace.targetWorkspace :
-            this.sourceBlock_.workspace;
-    this.setValue(Blockly.Variables.generateUniqueName(workspace));
+    // var workspace =
+    //     this.sourceBlock_.isInFlyout ?
+    //         this.sourceBlock_.workspace.targetWorkspace :
+    //         this.sourceBlock_.workspace;
+    // this.setValue(Blockly.Variables.generateUniqueName(workspace));
+    this.setValue(""); // empty name to start with.
   }
 };
 
@@ -128,23 +129,29 @@ Blockly.FieldVariable.prototype.setValue = function(newValue) {
 Blockly.FieldVariable.prototype.dropdownCreate = function() {
   if (this.sourceBlock_ && this.sourceBlock_.workspace) {
     var variableList =
-        Blockly.Variables.allVariables(this.sourceBlock_.workspace);
+        //Blockly.Variables.allVariables(this.sourceBlock_.workspace);
+        Blockly.Variables.allGlobalVariables(this.sourceBlock_.workspace).map(v=>["global "+v.name,v.name]);
   } else {
     var variableList = [];
   }
   // Ensure that the currently selected variable is an option.
-  var name = this.getText();
-  if (name && variableList.indexOf(name) == -1) {
-    variableList.push(name);
-  }
+  // var name = this.getText();
+  // if (name && variableList.indexOf(name) == -1) {
+  //   variableList.push(name);
+  // }
   variableList.sort(goog.string.caseInsensitiveCompare);
   variableList.push(Blockly.Msg.RENAME_VARIABLE);
-  variableList.push(Blockly.Msg.NEW_VARIABLE);
+  //variableList.push(Blockly.Msg.NEW_VARIABLE);
   // Variables are not language-specific, use the name as both the user-facing
   // text and the internal representation.
   var options = [];
   for (var x = 0; x < variableList.length; x++) {
-    options[x] = [variableList[x], variableList[x]];
+    var theItem = variableList[x]
+    if(Array.isArray(theItem)) {
+      options[x] = [variableList[x][0], variableList[x][1]];
+    } else {
+      options[x] = [variableList[x], variableList[x]];
+    }
   }
   return options;
 };

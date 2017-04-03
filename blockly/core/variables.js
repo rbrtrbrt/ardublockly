@@ -55,7 +55,23 @@ Blockly.Variables.allGlobalVariables = function(workspace, includeEmptyNames = f
    return globals
 }
 
-
+Blockly.Variables.collectLocalVariables = function(block, name) {
+  var locals = [];
+  var child = block.getInputTargetBlock(name);
+  console.log("GETTING LOCALS FOR:", block.type);
+  while(child) {
+    console.log("   LOOKING AT CHILD:", child.type );
+    if( child.type == "variables_local" || child.type == "variables_local_init") {
+      locals.push({ name:  child.getFieldValue('VARNAME'),
+                    type:  Blockly.Types[child.getFieldValue('VARTYPE')],
+                    block: child
+                  });
+    }
+    child = child.getNextBlock();
+  }
+  console.log("ALL LOCALS FOUND:", locals.map(({name,type})=>name+":"+type.typeId).join(" "));
+  return locals;
+}
 
 /**
  * Find all user-created variables.

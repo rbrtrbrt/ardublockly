@@ -45,7 +45,7 @@ Blockly.Blocks['variables_get'] = {
     this.setColour(Blockly.Blocks.variables.HUE);
     this.appendDummyInput()
         .appendField(new Blockly.FieldVariable(
-        Blockly.Msg.VARIABLES_DEFAULT_NAME), 'VAR');
+        ""/*Blockly.Msg.VARIABLES_DEFAULT_NAME*/), 'VAR');
     this.setOutput(true);
     this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
     this.contextMenuMsg_ = Blockly.Msg.VARIABLES_GET_CREATE_SET;
@@ -98,7 +98,7 @@ Blockly.Blocks['variables_set'] = {
         {
           "type": "field_variable",
           "name": "VAR",
-          "variable": Blockly.Msg.VARIABLES_DEFAULT_NAME
+          "variable": "" // Blockly.Msg.VARIABLES_DEFAULT_NAME
         },
         {
           "type": "input_value",
@@ -238,7 +238,7 @@ Blockly.Blocks['variables_global_init'] = {
      }
   }
 };
-Blockly.Blocks['variables_init_local'] = {
+Blockly.Blocks['variables_local'] = {
   /**
    * Block for variable setter.
    * @this Blockly.Block
@@ -249,26 +249,63 @@ Blockly.Blocks['variables_init_local'] = {
         "name",
         Blockly.Variables.rename);
      nameField.setSpellcheck(false);
-     this.appendValueInput('VALUE')
-         .appendField("initialize local")
-         .appendField(nameField)
-         .appendField("to")
+
+     this.appendDummyInput()
+         .appendField("local variable")
+         .appendField(nameField, "VARNAME")
+         .appendField("has type")
+         .appendField(new Blockly.FieldDropdown(
+                          Blockly.Types.getTypeMenuItems()),
+                      'VARTYPE')
+         .appendField("value")
+
      this.setColour(Blockly.Blocks.variables.HUE);
      this.setTooltip(Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP);
-     this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
+     //this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
      this.setPreviousStatement(true);
      this.setNextStatement(true);
      this.warnings = [];
   },
-  contextMenuType_: 'variables_get',
-  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
+//  contextMenuType_: 'variables_get',
+//  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
+};
+Blockly.Blocks['variables_local_init'] = {
   /**
-   * Searches through the nested blocks to find a variable type.
+   * Block for variable setter.
    * @this Blockly.Block
-   * @param {!string} varName Name of this block variable to check type.
-   * @return {string} String to indicate the type of this block.
    */
-  getVarType: function(varName) {
-    return Blockly.Types.getChildBlockType(this);
-  }
+
+  init: function() {
+     var nameField = new Blockly.FieldTextInput(
+        "name",
+        Blockly.Variables.rename);
+     nameField.setSpellcheck(false);
+
+     this.appendValueInput('VALUE')
+         .appendField("local variable")
+         .appendField(nameField, "VARNAME")
+         .appendField("has type")
+         .appendField(new Blockly.FieldDropdown(
+                          Blockly.Types.getTypeMenuItems()),
+                      'VARTYPE')
+         .appendField("value")
+
+     this.setColour(Blockly.Blocks.variables.HUE);
+     this.setTooltip(Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP);
+     //this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
+     this.setPreviousStatement(true);
+     this.setNextStatement(true);
+     this.warnings = [];
+  },
+//  contextMenuType_: 'variables_get',
+//  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
+  // /**
+  //  * Searches through the nested blocks to find a variable type.
+  //  * @this Blockly.Block
+  //  * @param {!string} varName Name of this block variable to check type.
+  //  * @return {string} String to indicate the type of this block.
+  //  */
+  // getVarType: function(varName) {
+  //   return Blockly.Types.getChildBlockType(this);
+  // }
 };

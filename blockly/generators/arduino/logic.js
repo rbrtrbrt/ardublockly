@@ -23,16 +23,16 @@ Blockly.Arduino['controls_if'] = function(block) {
   var n = 0;
   var argument = Blockly.Arduino.valueToCode(block, 'IF' + n,
       Blockly.Arduino.ORDER_NONE) || 'false';
-  var branch = Blockly.Arduino.statementToCode(block, 'DO' + n);
+  var branch = Blockly.Arduino.statementToCppBlock(block, 'DO' + n);
   var code = 'if (' + argument + ') {\n' + branch + '}';
   for (n = 1; n <= block.elseifCount_; n++) {
     argument = Blockly.Arduino.valueToCode(block, 'IF' + n,
         Blockly.Arduino.ORDER_NONE) || 'false';
-    branch = Blockly.Arduino.statementToCode(block, 'DO' + n);
+    branch = Blockly.Arduino.statementToCppBlock(block, 'DO' + n);
     code += ' else if (' + argument + ') {\n' + branch + '}';
   }
   if (block.elseCount_) {
-    branch = Blockly.Arduino.statementToCode(block, 'ELSE');
+    branch = Blockly.Arduino.statementToCppBlock(block, 'ELSE');
     code += ' else {\n' + branch + '}';
   }
   return code + '\n';

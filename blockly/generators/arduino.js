@@ -425,3 +425,27 @@ Blockly.Arduino.noGeneratorCodeInline = function() {
 
 /** Used for not-yet-implemented block code generators */
 Blockly.Arduino.noGeneratorCodeLine = function() { return ''; };
+
+
+
+Blockly.Arduino.statementToCppBlock = function(block, name) {
+  var code = this.statementToCode(block, name);
+  var namespace = new Blockly.Names(Blockly.Arduino.RESERVED_WORDS_);
+  var localDecls = Blockly.Variables.collectLocalVariables(block,name);
+  var localVars = "";
+  for (var {name,type,block:lBlock} of localDecls) {
+    var initCode =
+        Blockly.Arduino.valueToCode(lBlock, 'VALUE', Blockly.Arduino.ORDER_ASSIGNMENT) ||
+            type.defaultValue || ""
+    if(initCode) {
+        initCode = " = " + initCode;
+     }
+     localVars += Blockly.Arduino.getArduinoType_(type) + ' ' +
+        namespace.getName(name, Blockly.Variables.NAME_TYPE) +
+        initCode+';\n'
+  }
+  if (localVars) {
+    localVars = this.prefixLines(/** @type {string} */ (localVars), this.INDENT);
+  }
+  return localVars + code;
+};

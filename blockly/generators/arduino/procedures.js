@@ -25,16 +25,16 @@ goog.require('Blockly.Arduino');
 Blockly.Arduino['procedures_defreturn'] = function(block) {
   var funcName = Blockly.Arduino.variableDB_.getName(
       block.getFieldValue('NAME'), Blockly.Procedures.NAME_TYPE);
-  var branch = Blockly.Arduino.statementToCode(block, 'STACK');
-  if (Blockly.Arduino.STATEMENT_PREFIX) {
-    branch = Blockly.Arduino.prefixLines(
-        Blockly.Arduino.STATEMENT_PREFIX.replace(/%1/g,
-        '\'' + block.id + '\''), Blockly.Arduino.INDENT) + branch;
-  }
-  if (Blockly.Arduino.INFINITE_LOOP_TRAP) {
-    branch = Blockly.Arduino.INFINITE_LOOP_TRAP.replace(/%1/g,
-        '\'' + block.id + '\'') + branch;
-  }
+  var branch = Blockly.Arduino.statementToCppBlock(block, 'STACK');
+  // if (Blockly.Arduino.STATEMENT_PREFIX) {
+  //   branch = Blockly.Arduino.prefixLines(
+  //       Blockly.Arduino.STATEMENT_PREFIX.replace(/%1/g,
+  //       '\'' + block.id + '\''), Blockly.Arduino.INDENT) + branch;
+  // }
+  // if (Blockly.Arduino.INFINITE_LOOP_TRAP) {
+  //   branch = Blockly.Arduino.INFINITE_LOOP_TRAP.replace(/%1/g,
+  //       '\'' + block.id + '\'') + branch;
+  // }
   var returnValue = Blockly.Arduino.valueToCode(block, 'RETURN',
       Blockly.Arduino.ORDER_NONE) || '';
   if (returnValue) {

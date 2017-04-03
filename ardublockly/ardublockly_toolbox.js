@@ -114,12 +114,14 @@ Ardublockly.TOOLBOX_XML =
 '    <block type="variables_global_init"></block>' +
 '    <block type="variables_get"></block>' +
 '    <block type="variables_set"></block>' +
-'    <block type="variables_set">' +
-'      <value name="VALUE">' +
-'        <block type="variables_set_type"></block>' +
-'      </value>' +
-'    </block>' +
-'    <block type="variables_set_type"></block>' +
+// '    <block type="variables_set">' +
+// '      <value name="VALUE">' +
+// '        <block type="variables_set_type"></block>' +
+// '      </value>' +
+// '    </block>' +
+// '    <block type="variables_set_type"></block>' +
+'    <block type="variables_local"></block>' +
+'    <block type="variables_local_init"></block>' +
 '  </category>' +
 '  <sep></sep>' +
 '  <category id="catFunctions" name="Functions" custom="PROCEDURE"></category>' +

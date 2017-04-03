@@ -57,3 +57,5 @@ Blockly.Arduino['variables_set_type'] = function(block) {
 
 Blockly.Arduino['variables_global'] = Blockly.Arduino.noGeneratorCodeLine;
 Blockly.Arduino['variables_global_init'] = Blockly.Arduino.noGeneratorCodeLine;
+Blockly.Arduino['variables_local'] = Blockly.Arduino.noGeneratorCodeLine;
+Blockly.Arduino['variables_local_init'] = Blockly.Arduino.noGeneratorCodeLine;

@@ -123,14 +123,28 @@ Blockly.Arduino.init = function(workspace) {
   });
 
   // Iterate through to capture all blocks types and set the function arguments
-  var varsWithTypes = Blockly.Arduino.StaticTyping.collectVarsWithTypes(workspace);
-  Blockly.Arduino.StaticTyping.setProcedureArgs(workspace, varsWithTypes);
+  //var varsWithTypes = Blockly.Arduino.StaticTyping.collectVarsWithTypes(workspace);
+  //Blockly.Arduino.StaticTyping.setProcedureArgs(workspace, varsWithTypes);
+
+  var globalsWithTypes = Blockly.Variables.allGlobalVariables(workspace);
+
+  for (var globalVar in globalsWithTypes) {
+    var gName = globalsWithTypes[globalVar].name;
+    var gType = globalsWithTypes[globalVar].type;
+    var gBlock = globalsWithTypes[globalVar].block;
+
+    var initCode =
+        Blockly.Arduino.valueToCode(gBlock, 'VALUE', Blockly.Arduino.ORDER_ASSIGNMENT) ||
+            gType.defaultValue || ""
+    if(initCode) {
+        initCode = " = " + initCode;
+     }
 
   // Set variable declarations with their Arduino type in the defines dictionary
-  for (var varName in varsWithTypes) {
-    Blockly.Arduino.addVariable(varName,
-        Blockly.Arduino.getArduinoType_(varsWithTypes[varName]) +' ' +
-        Blockly.Arduino.variableDB_.getName(varName, Blockly.Variables.NAME_TYPE) + ';');
+    Blockly.Arduino.addVariable(gName,
+       Blockly.Arduino.getArduinoType_(gType) +' ' +
+       Blockly.Arduino.variableDB_.getName(gName, Blockly.Variables.NAME_TYPE) +
+       initCode+';');
   }
 };
 

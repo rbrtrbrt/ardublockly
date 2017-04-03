@@ -17,42 +17,48 @@ goog.require('Blockly.Type');
 Blockly.Types.CHARACTER = new Blockly.Type({
   typeId: 'Character',
   typeMsgName: 'ARD_TYPE_CHAR',
-  compatibleTypes: []
+  compatibleTypes: [],
+  defaultValue: "'x'"
 });
 
 /** Text string. */
 Blockly.Types.TEXT = new Blockly.Type({
   typeId: 'Text',
   typeMsgName: 'ARD_TYPE_TEXT',
-  compatibleTypes: [Blockly.Types.CHARACTER]
+  compatibleTypes: [Blockly.Types.CHARACTER],
+  defaultValue: '""'
 });
 
 /** Boolean. */
 Blockly.Types.BOOLEAN = new Blockly.Type({
   typeId: 'Boolean',
   typeMsgName: 'ARD_TYPE_BOOL',
-  compatibleTypes: []
+  compatibleTypes: [],
+  defaultValue: "false"
 });
 
 /** Short integer number. */
 Blockly.Types.SHORT_NUMBER = new Blockly.Type({
-  typeId: 'Short Number',
+  typeId: 'Short Integer',
   typeMsgName: 'ARD_TYPE_SHORT',
-  compatibleTypes: []    // Circular dependencies, add after all declarations
+  compatibleTypes: [],    // Circular dependencies, add after all declarations
+  defaultValue: "0"
 });
 
 /** Integer number. */
 Blockly.Types.NUMBER = new Blockly.Type({
-  typeId: 'Number',
+  typeId: 'Integer',
   typeMsgName: 'ARD_TYPE_NUMBER',
-  compatibleTypes: []    // Circular dependencies, add after all declarations
+  compatibleTypes: [],    // Circular dependencies, add after all declarations
+  defaultValue: "0"
 });
 
 /** Large integer number. */
 Blockly.Types.LARGE_NUMBER = new Blockly.Type({
-  typeId: 'Large Number',
+  typeId: 'Large Integer',
   typeMsgName: 'ARD_TYPE_LONG',
-  compatibleTypes: []    // Circular dependencies, add after all declarations
+  compatibleTypes: [],    // Circular dependencies, add after all declarations
+  defaultValue: "0"
 });
 
 /** Decimal/floating point number. */
@@ -62,7 +68,8 @@ Blockly.Types.DECIMAL = new Blockly.Type({
   compatibleTypes: [Blockly.Types.BOOLEAN,
                     Blockly.Types.SHORT_NUMBER,
                     Blockly.Types.NUMBER,
-                    Blockly.Types.LARGE_NUMBER]
+                    Blockly.Types.LARGE_NUMBER],
+  defaultValue: "0.0"
 });
 
 /** Array/List of items. */
@@ -142,17 +149,38 @@ Blockly.Types.addType = function(typeId_, typeMsgName_, compatibleTypes_) {
  * This array only contains the valid types, excluding any error or temp types.
  * @return {!Array<Array<string>>} Blockly types in the format described above.
  */
-Blockly.Types.getValidTypeArray = function() {
+Blockly.Types.getTypeMenuItems = function() {
   var typesArray = [];
   for (var typeKey in Blockly.Types) {
     if ((typeKey !== 'UNDEF') && (typeKey !== 'CHILD_BLOCK_MISSING') &&
         (typeKey !== 'NULL') && (typeKey !== 'ARRAY') &&
+        (typeKey !== 'SHORT_NUMBER') && (typeKey !== 'CHARACTER') &&
         (typeof Blockly.Types[typeKey] !== 'function') &&
         !(Blockly.Types[typeKey] instanceof RegExp)) {
       typesArray.push([Blockly.Types[typeKey].typeName, typeKey]);
     }
   }
-  return typesArray;
+  var typeOrder = [ Blockly.Types.NUMBER,       Blockly.Types.DECIMAL,
+                    Blockly.Types.LARGE_NUMBER,
+                    Blockly.Types.TEXT,         Blockly.Types.BOOLEAN
+                 ].map( function(t){return t.typeName} );
+
+  function typeSorter(t1,t2) {
+     var pos1 = typeOrder.indexOf(t1[0])
+     var pos2 = typeOrder.indexOf(t2[0])
+     if( pos1 == -1 && pos2 == -1 ) {
+        if(t1[0] < t2[0]) return 1
+        else if(t1[0] > t2[0]) return -1
+        else return 0;
+     } else if( pos1 == -1 ) {
+        return 1
+     } else if( pos2 == -1) {
+        return -1
+     } else {
+        return pos1 - pos2;
+     }
+  }
+  return typesArray.sort(typeSorter);
 };
 
 /**
@@ -220,4 +248,3 @@ Blockly.Types.identifyNumber = function(numberString) {
     }
     return Blockly.Types.NULL;
 };
-

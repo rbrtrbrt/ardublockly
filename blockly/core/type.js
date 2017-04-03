@@ -35,13 +35,14 @@ Blockly.Type = function(args) {
   }
   /** @type {string} */
   this.typeId = args.typeId;
+  this.defaultValue = args.defaultValue;
   /** @type {string}
    * This is the translatable Blockly.Msg member string name.
    * @private
    */
   this.typeMsgName_ = args.typeMsgName;
   /**
-   * @type {Array<Blockly.Type>} 
+   * @type {Array<Blockly.Type>}
    * @private
    */
   this.compatibleTypes_ = args.compatibleTypes;

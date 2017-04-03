@@ -54,3 +54,6 @@ Blockly.Arduino['variables_set_type'] = function(block) {
   var code = '(' + varType + ')(' + argument0 + ')';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
+
+Blockly.Arduino['variables_global'] = Blockly.Arduino.noGeneratorCodeLine;
+Blockly.Arduino['variables_global_init'] = Blockly.Arduino.noGeneratorCodeLine;

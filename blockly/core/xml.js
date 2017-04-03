@@ -328,6 +328,9 @@ Blockly.Xml.domToBlock = function(xmlBlock, workspace) {
   // Create top-level block.
   Blockly.Events.disable();
   var topBlock = Blockly.Xml.domToBlockHeadless_(xmlBlock, workspace);
+  if(topBlock.afterCreation) { 
+     topBlock.afterCreation();
+  }
   if (workspace.rendered) {
     // Hide connections to speed up assembly.
     topBlock.setConnectionsHidden(true);

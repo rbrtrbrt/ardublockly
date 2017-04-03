@@ -125,3 +125,150 @@ Blockly.Blocks['variables_set'] = {
     return Blockly.Types.getChildBlockType(this);
   }
 };
+Blockly.Blocks['variables_global'] = {
+  /**
+   * Block for variable setter.
+   * @this Blockly.Block
+   */
+
+  init: function() {
+     var nameField = new Blockly.FieldTextInput(
+        "name",
+        Blockly.Variables.rename);
+     nameField.setSpellcheck(false);
+     this.appendDummyInput()
+         .appendField("global variable")
+         .appendField(nameField, "VARNAME")
+         .appendField("has type")
+         .appendField(new Blockly.FieldDropdown(
+                          Blockly.Types.getTypeMenuItems()),
+                      'VARTYPE');
+     this.setColour(Blockly.Blocks.variables.HUE);
+     this.setTooltip("Create a global variable.");
+    this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
+  },
+  canBeRoot: true,
+  // contextMenuType_: 'variables_get',
+  // customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
+  /**
+   * Searches through the nested blocks to find a variable type.
+   * @this Blockly.Block
+   * @param {!string} varName Name of this block variable to check type.
+   * @return {string} String to indicate the type of this block.
+   */
+  getVarType: function(varName) {
+    //TODO: who calls this? //return Blockly.Types.getChildBlockType(this);
+    throw "FUNCTION NOT IMPLEMENTED";
+  },
+  // add number to name if name is duplicate
+  afterCreation: function() {
+     var globalVars = Blockly.Variables.allGlobalVariables(this.workspace);
+     var myName = this.getFieldValue('VARNAME');
+     var match = /(.*)-(\d+)$/.exec(myName);
+     if(match) {
+        myName = match[1];
+        count = parseInt(match[2]);
+     } else {
+        var count = 0;
+     }
+     var self = this;
+     function anyGlobalWithSameName(name) {
+        for (var idx = 0; idx < globalVars.length; idx++) {
+           var v = globalVars[idx];
+           if( v.block == self ) {
+              continue;
+           }
+           if( v.name == name ){
+             return true;
+           }
+        }
+        return false;
+     }
+
+     while (anyGlobalWithSameName(count ? myName + "-" + count : myName)) {
+        count ++
+     }
+     if(count) {
+        this.setFieldValue(myName + "-" + count,'VARNAME')
+     }
+  },
+  updateWarnings() {
+  }
+};
+Blockly.Blocks['variables_global_init'] = {
+  /**
+   * Block for variable setter.
+   * @this Blockly.Block
+   */
+
+  init: function() {
+     var nameField = new Blockly.FieldTextInput(
+        "name",
+        Blockly.Variables.rename);
+     nameField.setSpellcheck(false);
+     this.appendValueInput('VALUE')
+         .appendField("global variable")
+         .appendField(nameField, "VARNAME")
+         .appendField("has type")
+         .appendField(new Blockly.FieldDropdown(
+                          Blockly.Types.getTypeMenuItems()),
+                      'VARTYPE')
+         .appendField("value")
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip("Create a global variable and set its initial value.");
+//    this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
+  },
+  canBeRoot: true,
+  // contextMenuType_: 'variables_get',
+  // customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
+  /**
+   * Searches through the nested blocks to find a variable type.
+   * @this Blockly.Block
+   * @param {!string} varName Name of this block variable to check type.
+   * @return {string} String to indicate the type of this block.
+   */
+  getVarType:    Blockly.Blocks['variables_global'].getVarType,
+  afterCreation: Blockly.Blocks['variables_global'].afterCreation, // add number to name if name is duplicate
+  updateWarnings() {
+    //TODO: check if type matches value.
+     if(Blockly.Types.getChildBlockType(this)==Blockly.Types.CHILD_BLOCK_MISSING) {
+        this.setWarningText("There is no initial value.","CHILD_MISSING");
+     } else {
+        this.setWarningText(null,"CHILD_MISSING");
+     }
+  }
+};
+Blockly.Blocks['variables_init_local'] = {
+  /**
+   * Block for variable setter.
+   * @this Blockly.Block
+   */
+
+  init: function() {
+     var nameField = new Blockly.FieldTextInput(
+        "name",
+        Blockly.Variables.rename);
+     nameField.setSpellcheck(false);
+     this.appendValueInput('VALUE')
+         .appendField("initialize local")
+         .appendField(nameField)
+         .appendField("to")
+     this.setColour(Blockly.Blocks.variables.HUE);
+     this.setTooltip(Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP);
+     this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
+     this.setPreviousStatement(true);
+     this.setNextStatement(true);
+     this.warnings = [];
+  },
+  contextMenuType_: 'variables_get',
+  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
+  /**
+   * Searches through the nested blocks to find a variable type.
+   * @this Blockly.Block
+   * @param {!string} varName Name of this block variable to check type.
+   * @return {string} String to indicate the type of this block.
+   */
+  getVarType: function(varName) {
+    return Blockly.Types.getChildBlockType(this);
+  }
+};

@@ -1,7 +1,7 @@
 {
 	"@metadata": {
 		"author": "Ellen Spertus <ellen.spertus@gmail.com>",
-		"lastupdated": "2016-10-09 00:55:05.070000",
+		"lastupdated": "2017-04-03 14:49:35.114758",
 		"locale": "en",
 		"messagedocumentation" : "qqq"
 	},
@@ -374,9 +374,9 @@
 	"ARD_TYPE_CHAR": "Character",
 	"ARD_TYPE_TEXT": "Text",
 	"ARD_TYPE_BOOL": "Boolean",
-	"ARD_TYPE_SHORT": "Short Number",
-	"ARD_TYPE_NUMBER": "Number",
-	"ARD_TYPE_LONG": "Large Number",
+	"ARD_TYPE_SHORT": "Short Integer",
+	"ARD_TYPE_NUMBER": "Integer",
+	"ARD_TYPE_LONG": "Large Integer",
 	"ARD_TYPE_DECIMAL": "Decimal",
 	"ARD_TYPE_ARRAY": "Array",
 	"ARD_TYPE_NULL": "Null",

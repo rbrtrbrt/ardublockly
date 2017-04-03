@@ -37,6 +37,26 @@ goog.require('goog.string');
  */
 Blockly.Variables.NAME_TYPE = 'VARIABLE';
 
+
+Blockly.Variables.allGlobalVariables = function(workspace, includeEmptyNames = false) {
+   var blocks         = workspace.getTopBlocks(true);
+   var globals        = [];
+   for (var idx = 0; idx < blocks.length; idx++) {
+      var b = blocks[idx];
+      if( b.type === 'variables_global' || b.type === 'variables_global_init' ) {
+         var gName = b.getFieldValue('VARNAME');
+         var gType = Blockly.Types[b.getFieldValue('VARTYPE')];
+         console.log("TYPE OF",gName,"::",gType.typeId, gType.defaultValue);
+         if( gName || includeEmptyNames ) {
+            globals.push({block:b, name:gName, type: gType});
+         }
+      }
+   }
+   return globals
+}
+
+
+
 /**
  * Find all user-created variables.
  * @param {!Blockly.Block|!Blockly.Workspace} root Root block or workspace.

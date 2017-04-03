@@ -31,7 +31,7 @@ Blockly.Blocks['variables_set_type'] = {
     this.appendDummyInput()
         .appendField(Blockly.Msg.ARD_VAR_AS)
         .appendField(new Blockly.FieldDropdown(
-                         Blockly.Types.getValidTypeArray()),
+                         Blockly.Types.getTypeMenuItems()),
                      'VARIABLE_SETTYPE_TYPE');
     this.setInputsInline(true);
     this.setOutput(true);

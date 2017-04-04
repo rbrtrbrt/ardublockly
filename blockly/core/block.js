@@ -387,18 +387,23 @@ Blockly.Block.prototype.getInputWithBlock = function(block) {
  * statement, whereas the surrounding block is an if statement, while loop, etc.
  * @return {Blockly.Block} The block that surrounds the current block.
  */
-Blockly.Block.prototype.getSurroundParent = function() {
+Blockly.Block.prototype.getSurroundParent = function(returnInputName = false) {
   var block = this;
   do {
     var prevBlock = block;
     block = block.getParent();
     if (!block) {
       // Ran off the top.
-      return null;
+      return returnInputName? [null,null]:null;
     }
   } while (block.getNextBlock() == prevBlock);
   // This block is an enclosing parent, not just a statement in a stack.
-  return block;
+  if(returnInputName) {
+    console.log("BLOCK", this.type,"IS IN SCOPE", block.type+"::"+block.getInputWithBlock(prevBlock).name);
+    return [block, block.getInputWithBlock(prevBlock).name]
+  } else {
+    return block;
+  }
 };
 
 /**

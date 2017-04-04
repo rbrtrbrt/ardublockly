@@ -133,7 +133,7 @@ Blockly.Blocks['variables_global'] = {
 
   init: function() {
      var nameField = new Blockly.FieldTextInput(
-        "name",
+        "var-name",
         Blockly.Variables.rename);
      nameField.setSpellcheck(false);
      this.appendDummyInput()
@@ -203,7 +203,7 @@ Blockly.Blocks['variables_global_init'] = {
 
   init: function() {
      var nameField = new Blockly.FieldTextInput(
-        "name",
+        "var-name",
         Blockly.Variables.rename);
      nameField.setSpellcheck(false);
      this.appendValueInput('VALUE')
@@ -246,7 +246,7 @@ Blockly.Blocks['variables_local'] = {
 
   init: function() {
      var nameField = new Blockly.FieldTextInput(
-        "name",
+        "var-name",
         Blockly.Variables.rename);
      nameField.setSpellcheck(false);
 
@@ -277,7 +277,7 @@ Blockly.Blocks['variables_local_init'] = {
 
   init: function() {
      var nameField = new Blockly.FieldTextInput(
-        "name",
+        "var-name",
         Blockly.Variables.rename);
      nameField.setSpellcheck(false);
 

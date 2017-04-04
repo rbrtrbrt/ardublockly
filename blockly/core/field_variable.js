@@ -127,19 +127,22 @@ Blockly.FieldVariable.prototype.setValue = function(newValue) {
  * @this {!Blockly.FieldVariable}
  */
 Blockly.FieldVariable.prototype.dropdownCreate = function() {
+  var variableList = []
   if (this.sourceBlock_ && this.sourceBlock_.workspace) {
-    var variableList =
-        //Blockly.Variables.allVariables(this.sourceBlock_.workspace);
-        Blockly.Variables.allGlobalVariables(this.sourceBlock_.workspace).map(v=>["global "+v.name,v.name]);
-  } else {
-    var variableList = [];
+    var locals = Blockly.Variables.collectAllLocalVariablesInScope(this.sourceBlock_);
+    locals = locals.map(v=>v.name);
+    variableList = variableList.concat(locals);
+    var globals = Blockly.Variables.allGlobalVariables(this.sourceBlock_.workspace);
+    globals = globals.map(v=>["global "+v.name,v.name]);
+    globals.sort(([a,b],[c,d])=> goog.string.caseInsensitiveCompare(a,c));
+    variableList = variableList.concat(globals);
   }
   // Ensure that the currently selected variable is an option.
   // var name = this.getText();
   // if (name && variableList.indexOf(name) == -1) {
   //   variableList.push(name);
   // }
-  variableList.sort(goog.string.caseInsensitiveCompare);
+  // variableList.sort(goog.string.caseInsensitiveCompare);
   variableList.push(Blockly.Msg.RENAME_VARIABLE);
   //variableList.push(Blockly.Msg.NEW_VARIABLE);
   // Variables are not language-specific, use the name as both the user-facing

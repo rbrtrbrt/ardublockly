@@ -132,9 +132,14 @@ Blockly.FieldVariable.prototype.dropdownCreate = function() {
     var locals = Blockly.Variables.collectAllLocalVariablesInScope(this.sourceBlock_);
     locals = locals.map(v=>v.name);
     variableList = variableList.concat(locals);
+    var root = this.sourceBlock_.getRootBlock();
+    if(root.getProcedureDef) {
+      var params = root.getProcedureDef()[1];
+      variableList = variableList.concat(params.map(p=>["input "+p.name,p.name]));
+    }
     var globals = Blockly.Variables.allGlobalVariables(this.sourceBlock_.workspace);
     globals = globals.map(v=>["global "+v.name,v.name]);
-    globals.sort(([a,b],[c,d])=> goog.string.caseInsensitiveCompare(a,c));
+    globals.sort(([a,b],[c,d])=> goog.string.caseInsensitiveCompare(b,d));
     variableList = variableList.concat(globals);
   }
   // Ensure that the currently selected variable is an option.

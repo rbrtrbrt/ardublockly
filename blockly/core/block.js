@@ -399,7 +399,6 @@ Blockly.Block.prototype.getSurroundParent = function(returnInputName = false) {
   } while (block.getNextBlock() == prevBlock);
   // This block is an enclosing parent, not just a statement in a stack.
   if(returnInputName) {
-    console.log("BLOCK", this.type,"IS IN SCOPE", block.type+"::"+block.getInputWithBlock(prevBlock).name);
     return [block, block.getInputWithBlock(prevBlock).name]
   } else {
     return block;

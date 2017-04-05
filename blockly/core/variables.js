@@ -46,7 +46,6 @@ Blockly.Variables.allGlobalVariables = function(workspace, includeEmptyNames = f
       if( b.type === 'variables_global' || b.type === 'variables_global_init' ) {
          var gName = b.getFieldValue('VARNAME');
          var gType = Blockly.Types[b.getFieldValue('VARTYPE')];
-         console.log("TYPE OF",gName,"::",gType.typeId, gType.defaultValue);
          if( gName || includeEmptyNames ) {
             globals.push({block:b, name:gName, type: gType});
          }
@@ -56,7 +55,6 @@ Blockly.Variables.allGlobalVariables = function(workspace, includeEmptyNames = f
 }
 
 Blockly.Variables.collectAllLocalVariablesInScope = function(startBlock) {
-  if(startBlock.type == "variables_set") debugger;
   var vars = []
   var result = startBlock.getSurroundParent(true);
   var [scopeBlock,inputName] = result;

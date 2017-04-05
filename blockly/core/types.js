@@ -15,7 +15,7 @@ goog.require('Blockly.Type');
 
 /** Single character. */
 Blockly.Types.CHARACTER = new Blockly.Type({
-  typeId: 'Character',
+  typeId: 'CHARACTER',
   typeMsgName: 'ARD_TYPE_CHAR',
   compatibleTypes: [],
   defaultValue: "'x'"
@@ -23,7 +23,7 @@ Blockly.Types.CHARACTER = new Blockly.Type({
 
 /** Text string. */
 Blockly.Types.TEXT = new Blockly.Type({
-  typeId: 'Text',
+  typeId: 'TEXT',
   typeMsgName: 'ARD_TYPE_TEXT',
   compatibleTypes: [Blockly.Types.CHARACTER],
   defaultValue: '""'
@@ -31,7 +31,7 @@ Blockly.Types.TEXT = new Blockly.Type({
 
 /** Boolean. */
 Blockly.Types.BOOLEAN = new Blockly.Type({
-  typeId: 'Boolean',
+  typeId: 'BOOLEAN',
   typeMsgName: 'ARD_TYPE_BOOL',
   compatibleTypes: [],
   defaultValue: "false"
@@ -39,7 +39,7 @@ Blockly.Types.BOOLEAN = new Blockly.Type({
 
 /** Short integer number. */
 Blockly.Types.SHORT_NUMBER = new Blockly.Type({
-  typeId: 'Short Integer',
+  typeId: 'SHORT_NUMBER',
   typeMsgName: 'ARD_TYPE_SHORT',
   compatibleTypes: [],    // Circular dependencies, add after all declarations
   defaultValue: "0"
@@ -47,7 +47,7 @@ Blockly.Types.SHORT_NUMBER = new Blockly.Type({
 
 /** Integer number. */
 Blockly.Types.NUMBER = new Blockly.Type({
-  typeId: 'Integer',
+  typeId: 'NUMBER',
   typeMsgName: 'ARD_TYPE_NUMBER',
   compatibleTypes: [],    // Circular dependencies, add after all declarations
   defaultValue: "0"
@@ -55,7 +55,7 @@ Blockly.Types.NUMBER = new Blockly.Type({
 
 /** Large integer number. */
 Blockly.Types.LARGE_NUMBER = new Blockly.Type({
-  typeId: 'Large Integer',
+  typeId: 'LARGE_NUMBER',
   typeMsgName: 'ARD_TYPE_LONG',
   compatibleTypes: [],    // Circular dependencies, add after all declarations
   defaultValue: "0"
@@ -63,7 +63,7 @@ Blockly.Types.LARGE_NUMBER = new Blockly.Type({
 
 /** Decimal/floating point number. */
 Blockly.Types.DECIMAL = new Blockly.Type({
-  typeId: 'Decimal',
+  typeId: 'DECIMAL',
   typeMsgName: 'ARD_TYPE_DECIMAL',
   compatibleTypes: [Blockly.Types.BOOLEAN,
                     Blockly.Types.SHORT_NUMBER,
@@ -74,28 +74,28 @@ Blockly.Types.DECIMAL = new Blockly.Type({
 
 /** Array/List of items. */
 Blockly.Types.ARRAY = new Blockly.Type({
-  typeId: 'Array',
+  typeId: 'ARRAY',
   typeMsgName: 'ARD_TYPE_ARRAY',
   compatibleTypes: []
 });
 
 /** Null indicate there is no type. */
 Blockly.Types.NULL = new Blockly.Type({
-  typeId: 'Null',
+  typeId: 'NULL',
   typeMsgName: 'ARD_TYPE_NULL',
   compatibleTypes: []
 });
 
 /** Type not defined, or not yet defined. */
 Blockly.Types.UNDEF = new Blockly.Type({
-  typeId: 'Undefined',
+  typeId: 'UNDEF',
   typeMsgName: 'ARD_TYPE_UNDEF',
   compatibleTypes: []
 });
 
 /** Set when no child block (meant to define the variable type) is connected. */
 Blockly.Types.CHILD_BLOCK_MISSING = new Blockly.Type({
-  typeId: 'ChildBlockMissing',
+  typeId: 'CHILD_BLOCK_MISSING',
   typeMsgName: 'ARD_TYPE_CHILDBLOCKMISSING',
   compatibleTypes: []
 });
@@ -131,18 +131,18 @@ Blockly.Types.LARGE_NUMBER.addCompatibleTypes([
  * @param {Array<Blockly.Type>} compatibleTypes_ List of types this Type is
  *     compatible with.
  */
-Blockly.Types.addType = function(typeId_, typeMsgName_, compatibleTypes_) {
-  // The Id is used as the key from the value pair in the BlocklyTypes object
-  var key = typeId_.toUpperCase().replace(/ /g, '_');
-  if (Blockly.Types[key] !== undefined) {
-    throw 'The Blockly type ' + key + ' already exists.';
-  }
-  Blockly.Types[key] = new Blockly.Type({
-    typeId: typeId_,
-    typeName: typeMsgName_,
-    compatibleTypes: compatibleTypes_
-  });
-};
+// Blockly.Types.addType = function(typeId_, typeMsgName_, compatibleTypes_) {
+//   // The Id is used as the key from the value pair in the BlocklyTypes object
+//   var key = typeId_.toUpperCase().replace(/ /g, '_');
+//   if (Blockly.Types[key] !== undefined) {
+//     throw 'The Blockly type ' + key + ' already exists.';
+//   }
+//   Blockly.Types[key] = new Blockly.Type({
+//     typeId: typeId_,
+//     typeName: typeMsgName_,
+//     compatibleTypes: compatibleTypes_
+//   });
+// };
 
 /**
  * Converts the static types dictionary in to a an array with 2-item arrays.

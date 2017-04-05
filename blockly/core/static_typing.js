@@ -213,12 +213,12 @@ Blockly.StaticTyping.prototype.setBlockTypeWarning =
  * types.
  * @param {Blockly.Workspace} workspace Blockly Workspace to collect variables.
  */
-Blockly.StaticTyping.prototype.setProcedureArgs = function(workspace) {
-  var blocks = workspace.getTopBlocks();
-  for (var i = 0, length_ = blocks.length; i < length_; i++) {
-    var setArgsType = blocks[i].setArgsType;
-    if (setArgsType) {
-      setArgsType.call(blocks[i], this.varTypeDict);
-    }
-  }
-};
+// Blockly.StaticTyping.prototype.setProcedureArgs = function(workspace) {
+//   var blocks = workspace.getTopBlocks();
+//   for (var i = 0, length_ = blocks.length; i < length_; i++) {
+//     var setArgsType = blocks[i].setArgsType;
+//     if (setArgsType) {
+//       setArgsType.call(blocks[i], this.varTypeDict);
+//     }
+//   }
+// };

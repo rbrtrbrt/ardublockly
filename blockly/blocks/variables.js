@@ -257,7 +257,6 @@ Blockly.Blocks['variables_local'] = {
          .appendField(new Blockly.FieldDropdown(
                           Blockly.Types.getTypeMenuItems()),
                       'VARTYPE')
-         .appendField("value")
 
      this.setColour(Blockly.Blocks.variables.HUE);
      this.setTooltip(Blockly.Msg.PROCEDURES_DEFNORETURN_TOOLTIP);

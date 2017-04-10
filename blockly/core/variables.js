@@ -59,7 +59,7 @@ Blockly.Variables.collectAllLocalVariablesInScope = function(startBlock) {
   var result = startBlock.getSurroundParent(true);
   var [scopeBlock,inputName] = result;
   while(scopeBlock) {
-    result = Blockly.Variables.collectLocalVariables(scopeBlock,inputName);
+    result = Blockly.Variables.collectLocalVariables(scopeBlock.getInputTargetBlock(inputName));
     vars = vars.concat(result);
     result = scopeBlock.getSurroundParent(true);
     [scopeBlock,inputName] = result;
@@ -67,17 +67,16 @@ Blockly.Variables.collectAllLocalVariablesInScope = function(startBlock) {
   return vars;
 }
 
-Blockly.Variables.collectLocalVariables = function(block, name) {
+Blockly.Variables.collectLocalVariables = function(block) {
   var locals = [];
-  var child = block.getInputTargetBlock(name);
-  while(child) {
-    if( child.type == "variables_local" || child.type == "variables_local_init") {
-      locals.push({ name:  child.getFieldValue('VARNAME'),
-                    type:  Blockly.Types[child.getFieldValue('VARTYPE')],
-                    block: child
+  while(block) {
+    if( block.type == "variables_local" || block.type == "variables_local_init") {
+      locals.push({ name:  block.getFieldValue('VARNAME'),
+                    type:  Blockly.Types[block.getFieldValue('VARTYPE')],
+                    block: block
                   });
     }
-    child = child.getNextBlock();
+    block = block.getNextBlock();
   }
   return locals;
 }
@@ -124,15 +123,61 @@ Blockly.Variables.allVariables = function(root) {
  * @param {string} newName New variable name.
  * @param {!Blockly.Workspace} workspace Workspace rename variables in.
  */
-Blockly.Variables.renameVariable = function(oldName, newName, workspace) {
+Blockly.Variables.renameGlobalVariable = function(oldName, newName, workspace) {
+  console.log("B.V.rGV:", oldName,newName, workspace);
   Blockly.Events.setGroup(true);
-  var blocks = workspace.getAllBlocks();
+  var blocks = workspace.getTopBlocks();
   // Iterate through every block.
   for (var i = 0; i < blocks.length; i++) {
     blocks[i].renameVar(oldName, newName);
   }
   Blockly.Events.setGroup(false);
 };
+/**
+ * Find all instances of the specified variable and rename them.
+ * @param {string} oldName Variable to rename.
+ * @param {string} newName New variable name.
+ * @param {!Blockly.Workspace} workspace Workspace rename variables in.
+ */
+Blockly.Variables.renameLocalVariable = function(oldName, newName, declBlock) {
+  Blockly.Events.setGroup(true);
+    var result = declBlock.getSurroundParent(true);
+    console.log("::1 renameLocalVariable:", result)
+    var [scopeBlock,inputName] = result;
+    if(scopeBlock) {
+      var statements = scopeBlock.getInputTargetBlock(inputName);
+      Blockly.Variables.renameVarInStatements(statements,oldName,newName,true)
+    }
+  Blockly.Events.setGroup(false);
+};
+
+Blockly.Variables.renameVarInStatements = function(statementStart, oldName, newName, inThisScope = false) {
+  if( ! inThisScope ) {
+    var localVars = Blockly.Variables.collectLocalVariables(statementStart);
+    if(localVars.some(lv=>lv.name == oldName)) {
+      return;
+    }
+  }
+  var block = statementStart;
+  while(block) {
+    block.renameVar(oldName,newName);
+    block = block.getNextBlock();
+  }
+}
+Blockly.Variables.globalRenameValidator = function(newName) {
+  newName = newName.replace(/^[\s\xa0]+|[\s\xa0]+$/g, '');
+  newName = Blockly.Variables.findLegalName(newName, this.sourceBlock_);
+  // Rename any callers.  console.log("GLOBAL RENAME", newName);
+  if(newName == this.text_) { return newName}
+  Blockly.Variables.renameGlobalVariable(this.text_, newName, this.sourceBlock_.workspace);
+  return newName;
+}
+Blockly.Variables.localRenameValidator = function(newName) {
+  newName = newName.replace(/^[\s\xa0]+|[\s\xa0]+$/g, '');
+  if(newName == this.text_) { return newName}
+  Blockly.Variables.renameLocalVariable(this.text_, newName, this.sourceBlock_);
+  return newName;
+}
 
 /**
  * Construct the blocks required by the flyout for the variable category.
@@ -229,4 +274,53 @@ Blockly.Variables.generateUniqueName = function(workspace) {
     newName = 'i';
   }
   return newName;
+};
+
+/**
+ * Ensure two identically-named procedures don't exist.
+ * @param {string} name Proposed procedure name.
+ * @param {!Blockly.Block} block Block to disambiguate.
+ * @return {string} Non-colliding name.
+ */
+Blockly.Variables.findLegalName = function(name, block) {
+  if (block.isInFlyout) {
+    // Flyouts can have multiple procedures called 'do something'.
+    return name;
+  }
+  while (!Blockly.Variables.isLegalName(name, block.workspace, block)) {
+    // Collision with another procedure.
+    var r = name.match(/^(.*?)(\d+)$/);
+    if (!r) {
+      name += '2';
+    } else {
+      name = r[1] + (parseInt(r[2], 10) + 1);
+    }
+  }
+  return name;
+};
+
+/**
+ * Does this variable have a legal name?  Illegal names include names of
+ * procedures already defined.
+ * @param {string} name The questionable name.
+ * @param {!Blockly.Workspace} workspace The workspace to scan for collisions.
+ * @param {Blockly.Block=} opt_exclude Optional block to exclude from
+ *     comparisons (one doesn't want to collide with oneself).
+ * @return {boolean} True if the name is legal.
+ */
+Blockly.Variables.isLegalName = function(name, workspace, opt_exclude) {
+  var blocks = workspace.getTopBlocks();
+  // Iterate through every block and check the name.
+  for (var i = 0; i < blocks.length; i++) {
+    if (blocks[i] == opt_exclude) {
+      continue;
+    }
+    if (blocks[i].getVarName) {
+      var varName = blocks[i].getVarName();
+      if (Blockly.Names.equals(varName, name)) {
+        return false;
+      }
+    }
+  }
+  return true;
 };

@@ -112,7 +112,7 @@ Blockly.Procedures.findLegalName = function(name, block) {
  * @return {boolean} True if the name is legal.
  */
 Blockly.Procedures.isLegalName = function(name, workspace, opt_exclude) {
-  var blocks = workspace.getAllBlocks();
+  var blocks = workspace.getTopBlocks();
   // Iterate through every block and check the name.
   for (var i = 0; i < blocks.length; i++) {
     if (blocks[i] == opt_exclude) {
@@ -162,7 +162,7 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
     var block = goog.dom.createDom('block');
     block.setAttribute('type', 'arduino_functions');
     block.setAttribute('gap', 16);
-    // If this parent block present already in the workspace show as disabled 
+    // If this parent block present already in the workspace show as disabled
     var workspaceTopBlocks = workspace.getTopBlocks();
     for (var i = 0; i < workspaceTopBlocks.length; i++) {
       if (workspaceTopBlocks[i].getArduinoLoopsInstance &&
@@ -215,7 +215,7 @@ Blockly.Procedures.flyoutCategory = function(workspace) {
       block.appendChild(mutation);
       for (var t = 0; t < args.length; t++) {
         var arg = goog.dom.createDom('arg');
-        arg.setAttribute('name', args[t]);
+        arg.setAttribute('name', args[t].name);
         mutation.appendChild(arg);
       }
       xmlList.push(block);
@@ -274,7 +274,6 @@ Blockly.Procedures.mutateCallers = function(defBlock) {
   var xmlElement = defBlock.mutationToDom(true);
   var callers = Blockly.Procedures.getCallers(name, defBlock.workspace);
   for (var i = 0, caller; caller = callers[i]; i++) {
-    var oldMutationDom = caller.mutationToDom();
     var oldMutation = oldMutationDom && Blockly.Xml.domToText(oldMutationDom);
     caller.domToMutation(xmlElement);
     var newMutationDom = caller.mutationToDom();
@@ -284,6 +283,7 @@ Blockly.Procedures.mutateCallers = function(defBlock) {
       // undo action since it is deterministically tied to the procedure's
       // definition mutation.
       Blockly.Events.recordUndo = false;
+      var oldMutationDom = caller.mutationToDom();
       Blockly.Events.fire(new Blockly.Events.Change(
           caller, 'mutation', null, oldMutation, newMutation));
       Blockly.Events.recordUndo = oldRecordUndo;

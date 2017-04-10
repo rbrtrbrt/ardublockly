@@ -65,6 +65,7 @@ Blockly.Blocks['procedures_defnoreturn'] = {
    * inconsistent as a result of the XML loading.
    * @this Blockly.Block
    */
+
   validate: function () {
     var name = Blockly.Procedures.findLegalName(
         this.getFieldValue('NAME'), this);
@@ -224,6 +225,10 @@ Blockly.Blocks['procedures_defnoreturn'] = {
    */
   compose: function(containerBlock) {
     // Parameter list.
+    var oldArgs = {}
+    for(var idx in this.arguments_) {
+      oldArgs[this.paramIds_[idx]] = this.arguments_[idx]
+    }
     this.arguments_ = [];
     this.paramIds_ = [];
     var paramBlock = containerBlock.getInputTargetBlock('STACK');
@@ -234,6 +239,13 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       this.paramIds_.push(paramBlock.id);
       paramBlock = paramBlock.nextConnection &&
           paramBlock.nextConnection.targetBlock();
+    }
+    for(var idx in this.paramIds_) {
+      if( oldArgs[this.paramIds_[idx]] && oldArgs[this.paramIds_[idx]].name !== this.arguments_[idx].name) {
+        console.log("!!!!! DETECTED ARGNAME CHANGE:", oldArgs[this.paramIds_[idx]].name, "=>", this.arguments_[idx].name);
+        var statements = this.getInputTargetBlock('STACK');
+        Blockly.Variables.renameVarInStatements(statements, oldArgs[this.paramIds_[idx]].name, this.arguments_[idx].name)
+      }
     }
     this.updateParams_();
     Blockly.Procedures.mutateCallers(this);
@@ -299,26 +311,11 @@ Blockly.Blocks['procedures_defnoreturn'] = {
    * @this Blockly.Block
    */
   renameVar: function(oldName, newName) {
-    var change = false;
-    for (var i = 0; i < this.arguments_.length; i++) {
-      if (Blockly.Names.equals(oldName, this.arguments_[i].name)) {
-        this.arguments_[i].name = newName;
-        change = true;
-      }
+    if(this.arguments_.some(a=>a.name===oldName)) {
+      return;  // oldName matches argument name, so is shadowed inside proc body.
     }
-    if (change) {
-      this.updateParams_();
-      // Update the mutator's variables if the mutator is open.
-      if (this.mutator.isVisible()) {
-        var blocks = this.mutator.workspace_.getAllBlocks();
-        for (var i = 0, block; block = blocks[i]; i++) {
-          if (block.type == 'procedures_mutatorarg' &&
-              Blockly.Names.equals(oldName, block.getFieldValue('NAME'))) {
-            block.setFieldValue(newName, 'NAME');
-          }
-        }
-      }
-    }
+    var statements = this.getInputTargetBlock('STACK');
+    Blockly.Variables.renameVarInStatements(statements,oldName,newName)
   },
   /**
    * Add custom menu options to this block's context menu.
@@ -751,14 +748,15 @@ Blockly.Blocks['procedures_callnoreturn'] = {
    * @param {string} newName Renamed variable.
    * @this Blockly.Block
    */
-  renameVar: function(oldName, newName) {
-    for (var i = 0; i < this.arguments_.length; i++) {
-      if (Blockly.Names.equals(oldName, this.arguments_[i])) {
-        this.arguments_[i] = newName;
-        this.getField('ARGNAME' + i).setValue(newName);
-      }
-    }
-  },
+  // renameVar: function(oldName, newName) {
+  //   throw "proc.call.renameVar needs reconsidering"
+  //   for (var i = 0; i < this.arguments_.length; i++) {
+  //     if (Blockly.Names.equals(oldName, this.arguments_[i])) {
+  //       this.arguments_[i] = newName;
+  //       this.getField('ARGNAME' + i).setValue(newName);
+  //     }
+  //   }
+  // },
   /**
    * Add menu option to find the definition block for this call.
    * @param {!Array} options List of menu options to add to.
@@ -800,7 +798,7 @@ Blockly.Blocks['procedures_callreturn'] = {
   updateShape_: Blockly.Blocks['procedures_callnoreturn'].updateShape_,
   mutationToDom: Blockly.Blocks['procedures_callnoreturn'].mutationToDom,
   domToMutation: Blockly.Blocks['procedures_callnoreturn'].domToMutation,
-  renameVar: Blockly.Blocks['procedures_callnoreturn'].renameVar,
+  //renameVar: Blockly.Blocks['procedures_callnoreturn'].renameVar,
   customContextMenu: Blockly.Blocks['procedures_callnoreturn'].customContextMenu
 };
 

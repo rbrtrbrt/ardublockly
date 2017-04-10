@@ -431,7 +431,7 @@ Blockly.Arduino.noGeneratorCodeLine = function() { return ''; };
 Blockly.Arduino.statementToCppBlock = function(block, name) {
   var code = this.statementToCode(block, name);
   var namespace = new Blockly.Names(Blockly.Arduino.RESERVED_WORDS_);
-  var localDecls = Blockly.Variables.collectLocalVariables(block,name);
+  var localDecls = Blockly.Variables.collectLocalVariables(block.getInputTargetBlock(name));
   var localVars = "";
   for (var {name,type,block:lBlock} of localDecls) {
     var initCode =

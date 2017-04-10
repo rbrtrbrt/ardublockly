@@ -130,7 +130,7 @@ Blockly.FieldVariable.prototype.dropdownCreate = function() {
   var variableList = []
   if (this.sourceBlock_ && this.sourceBlock_.workspace) {
     var locals = Blockly.Variables.collectAllLocalVariablesInScope(this.sourceBlock_);
-    locals = locals.map(v=>v.name);
+    locals = locals.map(v=>[v.name,v.name]);
     variableList = variableList.concat(locals);
     var root = this.sourceBlock_.getRootBlock();
     if(root.getProcedureDef) {
@@ -142,13 +142,25 @@ Blockly.FieldVariable.prototype.dropdownCreate = function() {
     globals.sort(([a,b],[c,d])=> goog.string.caseInsensitiveCompare(b,d));
     variableList = variableList.concat(globals);
   }
+  // remove duplicates
+  var seen = {}
+  var oldList = variableList
+  variableList = []
+  oldList.forEach(v => {
+    if(v[1] in seen) return;
+    seen[v[1]] = true;
+    variableList.push(v)
+  })
+  if(variableList.length == 0) {
+    variableList.push(["",""])
+  }
   // Ensure that the currently selected variable is an option.
   // var name = this.getText();
   // if (name && variableList.indexOf(name) == -1) {
   //   variableList.push(name);
   // }
   // variableList.sort(goog.string.caseInsensitiveCompare);
-  variableList.push(Blockly.Msg.RENAME_VARIABLE);
+  // variableList.push(Blockly.Msg.RENAME_VARIABLE);
   //variableList.push(Blockly.Msg.NEW_VARIABLE);
   // Variables are not language-specific, use the name as both the user-facing
   // text and the internal representation.

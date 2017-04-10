@@ -134,7 +134,7 @@ Blockly.Blocks['variables_global'] = {
   init: function() {
      var nameField = new Blockly.FieldTextInput(
         "var-name",
-        Blockly.Variables.rename);
+        Blockly.Variables.globalRenameValidator);
      nameField.setSpellcheck(false);
      this.appendDummyInput()
          .appendField("global variable")
@@ -160,37 +160,14 @@ Blockly.Blocks['variables_global'] = {
     //TODO: who calls this? //return Blockly.Types.getChildBlockType(this);
     throw "FUNCTION NOT IMPLEMENTED";
   },
-  // add number to name if name is duplicate
-  afterCreation: function() {
-     var globalVars = Blockly.Variables.allGlobalVariables(this.workspace);
-     var myName = this.getFieldValue('VARNAME');
-     var match = /(.*)-(\d+)$/.exec(myName);
-     if(match) {
-        myName = match[1];
-        count = parseInt(match[2]);
-     } else {
-        var count = 0;
-     }
-     var self = this;
-     function anyGlobalWithSameName(name) {
-        for (var idx = 0; idx < globalVars.length; idx++) {
-           var v = globalVars[idx];
-           if( v.block == self ) {
-              continue;
-           }
-           if( v.name == name ){
-             return true;
-           }
-        }
-        return false;
-     }
-
-     while (anyGlobalWithSameName(count ? myName + "-" + count : myName)) {
-        count ++
-     }
-     if(count) {
-        this.setFieldValue(myName + "-" + count,'VARNAME')
-     }
+  getVarName: function() {
+    return this.getFieldValue('VARNAME');
+  },
+  validate: function () {
+    var name = Blockly.Variables.findLegalName(
+        this.getFieldValue('VARNAME'), this);
+    console.log("VAR VALID?", name);
+    this.setFieldValue(name, 'VARNAME');
   },
   updateWarnings() {
   }
@@ -204,7 +181,7 @@ Blockly.Blocks['variables_global_init'] = {
   init: function() {
      var nameField = new Blockly.FieldTextInput(
         "var-name",
-        Blockly.Variables.rename);
+        Blockly.Variables.globalRenameValidator);
      nameField.setSpellcheck(false);
      this.appendValueInput('VALUE')
          .appendField("global variable")
@@ -222,13 +199,14 @@ Blockly.Blocks['variables_global_init'] = {
   // contextMenuType_: 'variables_get',
   // customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
   /**
-   * Searches through the nested blocks to find a variable type.
-   * @this Blockly.Block
-   * @param {!string} varName Name of this block variable to check type.
-   * @return {string} String to indicate the type of this block.
-   */
+  * Searches through the nested blocks to find a variable type.
+  * @this Blockly.Block
+  * @param {!string} varName Name of this block variable to check type.
+  * @return {string} String to indicate the type of this block.
+  */
   getVarType:    Blockly.Blocks['variables_global'].getVarType,
-  afterCreation: Blockly.Blocks['variables_global'].afterCreation, // add number to name if name is duplicate
+  getVarName:    Blockly.Blocks['variables_global'].getVarName,
+  validate:      Blockly.Blocks['variables_global'].validate,
   updateWarnings() {
     //TODO: check if type matches value.
      if(Blockly.Types.getChildBlockType(this)==Blockly.Types.CHILD_BLOCK_MISSING) {
@@ -247,7 +225,7 @@ Blockly.Blocks['variables_local'] = {
   init: function() {
      var nameField = new Blockly.FieldTextInput(
         "var-name",
-        Blockly.Variables.rename);
+        Blockly.Variables.localRenameValidator);
      nameField.setSpellcheck(false);
 
      this.appendDummyInput()
@@ -265,6 +243,7 @@ Blockly.Blocks['variables_local'] = {
      this.setNextStatement(true);
      this.warnings = [];
   },
+  getVarName:    Blockly.Blocks['variables_global'].getVarName,
 //  contextMenuType_: 'variables_get',
 //  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
 };
@@ -277,7 +256,7 @@ Blockly.Blocks['variables_local_init'] = {
   init: function() {
      var nameField = new Blockly.FieldTextInput(
         "var-name",
-        Blockly.Variables.rename);
+        Blockly.Variables.localRenameValidator);
      nameField.setSpellcheck(false);
 
      this.appendValueInput('VALUE')
@@ -296,6 +275,7 @@ Blockly.Blocks['variables_local_init'] = {
      this.setNextStatement(true);
      this.warnings = [];
   },
+  getVarName:    Blockly.Blocks['variables_local'].getVarName,
 //  contextMenuType_: 'variables_get',
 //  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
   // /**

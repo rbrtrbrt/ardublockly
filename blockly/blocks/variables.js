@@ -156,17 +156,14 @@ Blockly.Blocks['variables_global'] = {
    * @param {!string} varName Name of this block variable to check type.
    * @return {string} String to indicate the type of this block.
    */
-  getVarType: function(varName) {
-    //TODO: who calls this? //return Blockly.Types.getChildBlockType(this);
-    throw "FUNCTION NOT IMPLEMENTED";
-  },
-  getVarName: function() {
-    return this.getFieldValue('VARNAME');
+   getVarInfo: function() {
+    return { name: this.getFieldValue('VARNAME'),
+             type: Blockly.Types[this.getFieldValue('VARTYPE')]
+           };
   },
   validate: function () {
     var name = Blockly.Variables.findLegalName(
         this.getFieldValue('VARNAME'), this);
-    console.log("VAR VALID?", name);
     this.setFieldValue(name, 'VARNAME');
   },
   updateWarnings() {
@@ -205,7 +202,7 @@ Blockly.Blocks['variables_global_init'] = {
   * @return {string} String to indicate the type of this block.
   */
   getVarType:    Blockly.Blocks['variables_global'].getVarType,
-  getVarName:    Blockly.Blocks['variables_global'].getVarName,
+  getVarInfo:    Blockly.Blocks['variables_global'].getVarInfo,
   validate:      Blockly.Blocks['variables_global'].validate,
   updateWarnings() {
     //TODO: check if type matches value.
@@ -241,9 +238,8 @@ Blockly.Blocks['variables_local'] = {
      //this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
      this.setPreviousStatement(true);
      this.setNextStatement(true);
-     this.warnings = [];
   },
-  getVarName:    Blockly.Blocks['variables_global'].getVarName,
+  getVarInfo:    Blockly.Blocks['variables_global'].getVarInfo,
 //  contextMenuType_: 'variables_get',
 //  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
 };
@@ -273,9 +269,8 @@ Blockly.Blocks['variables_local_init'] = {
      //this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
      this.setPreviousStatement(true);
      this.setNextStatement(true);
-     this.warnings = [];
   },
-  getVarName:    Blockly.Blocks['variables_local'].getVarName,
+  getVarInfo:    Blockly.Blocks['variables_local'].getVarInfo,
 //  contextMenuType_: 'variables_get',
 //  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
   // /**

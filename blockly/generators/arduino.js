@@ -141,10 +141,8 @@ Blockly.Arduino.init = function(workspace) {
      }
 
   // Set variable declarations with their Arduino type in the defines dictionary
-    Blockly.Arduino.addVariable(gName,
-       Blockly.Arduino.getArduinoType_(gType) +' ' +
-       Blockly.Arduino.variableDB_.getName(gName, Blockly.Variables.NAME_TYPE) +
-       initCode+';');
+    var decl = Blockly.Arduino.getArduinoTypeDecl( gType, gName, Blockly.Arduino.variableDB_);
+    Blockly.Arduino.addVariable(gName, decl + initCode+";");
   }
 };
 
@@ -382,15 +380,8 @@ Blockly.Arduino.scrub_ = function(block, code) {
   return commentCode + code + nextCode;
 };
 
-/**
- * Generates Arduino Types from a Blockly Type.
- * @param {!Blockly.Type} typeBlockly The Blockly type to be converted.
- * @return {string} Arduino type for the respective Blockly input type, in a
- *     string format.
- * @private
- */
-Blockly.Arduino.getArduinoType_ = function(typeBlockly) {
-  switch (typeBlockly.typeId) {
+Blockly.Arduino.getArduinoBasicType = function(type) {
+  switch (type.typeId) {
     case Blockly.Types.SHORT_NUMBER.typeId:
       return 'char';
     case Blockly.Types.NUMBER.typeId:
@@ -414,8 +405,21 @@ Blockly.Arduino.getArduinoType_ = function(typeBlockly) {
       //return 'ChildBlockMissing';
       return 'int';
     default:
-      return 'Invalid Blockly Type';
+      return "Invalid Blockly Type"
     }
+}
+
+Blockly.Arduino.getArduinoTypeDecl = function(type, name, namespace) {
+    console.log("GET TYPEDECL", type.typeId, name);
+    if( ! type.isArray ) {
+      return Blockly.Arduino.getArduinoBasicType(type) + " " + name;
+    } else {
+      var codeName = namespace.getName(name, Blockly.Variables.NAME_TYPE);
+      var decl = Blockly.Arduino.getArduinoTypeDecl(type.elementType,name, namespace)
+      decl += "["+(type.arraySize||"")+"]"
+      return decl;
+    }
+    return "Invalid ArduBlockly Type for " + name;
 };
 
 /** Used for not-yet-implemented block code generators */
@@ -428,8 +432,8 @@ Blockly.Arduino.noGeneratorCodeLine = function() { return ''; };
 
 
 
-Blockly.Arduino.statementToCppBlock = function(block, name) {
-  var code = this.statementToCode(block, name);
+Blockly.Arduino.statementToCppBlock = function(block, name, noTab = false) {
+  var code = this.statementToCode(block, name, noTab);
   var namespace = new Blockly.Names(Blockly.Arduino.RESERVED_WORDS_);
   var localDecls = Blockly.Variables.collectLocalVariables(block.getInputTargetBlock(name));
   var localVars = "";
@@ -440,9 +444,7 @@ Blockly.Arduino.statementToCppBlock = function(block, name) {
     if(initCode) {
         initCode = " = " + initCode;
      }
-     localVars += Blockly.Arduino.getArduinoType_(type) + ' ' +
-        namespace.getName(name, Blockly.Variables.NAME_TYPE) +
-        initCode+';\n'
+     localVars += Blockly.Arduino.getArduinoTypeDecl(type, name, namespace) + initCode+';\n'
   }
   if (localVars) {
     localVars = this.prefixLines(/** @type {string} */ (localVars), this.INDENT);

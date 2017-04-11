@@ -72,13 +72,6 @@ Blockly.Types.DECIMAL = new Blockly.Type({
   defaultValue: "0.0"
 });
 
-/** Array/List of items. */
-Blockly.Types.ARRAY = new Blockly.Type({
-  typeId: 'ARRAY',
-  typeMsgName: 'ARD_TYPE_ARRAY',
-  compatibleTypes: []
-});
-
 /** Null indicate there is no type. */
 Blockly.Types.NULL = new Blockly.Type({
   typeId: 'NULL',
@@ -123,6 +116,27 @@ Blockly.Types.LARGE_NUMBER.addCompatibleTypes([
     Blockly.Types.DECIMAL]);
 
 
+Blockly.Types.makeArrayType = function( type, size ) {
+  console.log("MAKE ARRAY TYPE", type, size);
+  var typeId = size + "_ARRAY_OF_" + type.typeId
+  if( Blockly.Types[typeId] ) {
+    return Blockly.Types[typeId]
+  }
+  var arrayTypeSpec = {
+    typeId: typeId,
+    typeUIString: "array["+(size?size:"")+"] of "+type.typeName,
+    typeMsgName: null,
+    compatibleTypes: [],
+    defaultValue: "{} /* initializes all elements to 0, false or NULL */"
+  }
+  var arrayType = new Blockly.Type(arrayTypeSpec)
+  arrayType.isArray = true;
+  arrayType.arraySize = size;
+  arrayType.elementType = type;
+  Blockly.Types[typeId] = arrayType;
+  return arrayType;
+}
+
 /**
  * Adds another type to the Blockly.Types collection.
  * @param {string} typeId_ Identifiable name of the type.
@@ -150,37 +164,43 @@ Blockly.Types.LARGE_NUMBER.addCompatibleTypes([
  * @return {!Array<Array<string>>} Blockly types in the format described above.
  */
 Blockly.Types.getTypeMenuItems = function() {
-  var typesArray = [];
-  for (var typeKey in Blockly.Types) {
-    if ((typeKey !== 'UNDEF') && (typeKey !== 'CHILD_BLOCK_MISSING') &&
-        (typeKey !== 'NULL') && (typeKey !== 'ARRAY') &&
-        (typeKey !== 'SHORT_NUMBER') && (typeKey !== 'CHARACTER') &&
-        (typeof Blockly.Types[typeKey] !== 'function') &&
-        !(Blockly.Types[typeKey] instanceof RegExp)) {
-      typesArray.push([Blockly.Types[typeKey].typeName, typeKey]);
-    }
-  }
-  var typeOrder = [ Blockly.Types.NUMBER,       Blockly.Types.DECIMAL,
-                    Blockly.Types.LARGE_NUMBER,
-                    Blockly.Types.TEXT,         Blockly.Types.BOOLEAN
-                 ].map( function(t){return t.typeName} );
-
-  function typeSorter(t1,t2) {
-     var pos1 = typeOrder.indexOf(t1[0])
-     var pos2 = typeOrder.indexOf(t2[0])
-     if( pos1 == -1 && pos2 == -1 ) {
-        if(t1[0] < t2[0]) return 1
-        else if(t1[0] > t2[0]) return -1
-        else return 0;
-     } else if( pos1 == -1 ) {
-        return 1
-     } else if( pos2 == -1) {
-        return -1
-     } else {
-        return pos1 - pos2;
-     }
-  }
-  return typesArray.sort(typeSorter);
+  return [ [Blockly.Types.NUMBER.typeName,       Blockly.Types.NUMBER.typeId],
+           [Blockly.Types.DECIMAL.typeName,      Blockly.Types.DECIMAL.typeId],
+           [Blockly.Types.LARGE_NUMBER.typeName, Blockly.Types.LARGE_NUMBER.typeId],
+           [Blockly.Types.TEXT.typeName,         Blockly.Types.TEXT.typeId],
+           [Blockly.Types.BOOLEAN.typeName,      Blockly.Types.BOOLEAN.typeId]
+         ]
+  // var typesArray = [];
+  // for (var typeKey in Blockly.Types) {
+  //   if ((typeKey !== 'UNDEF') && (typeKey !== 'CHILD_BLOCK_MISSING') &&
+  //       (typeKey !== 'NULL') && (typeKey !== 'ARRAY') &&
+  //       (typeKey !== 'SHORT_NUMBER') && (typeKey !== 'CHARACTER') &&
+  //       (typeof Blockly.Types[typeKey] !== 'function') &&
+  //       !(Blockly.Types[typeKey] instanceof RegExp)) {
+  //     typesArray.push([Blockly.Types[typeKey].typeName, typeKey]);
+  //   }
+  // }
+  // var typeOrder = [ Blockly.Types.NUMBER,       Blockly.Types.DECIMAL,
+  //                   Blockly.Types.LARGE_NUMBER,
+  //                   Blockly.Types.TEXT,         Blockly.Types.BOOLEAN
+  //                ].map( function(t){return t.typeName} );
+  //
+  // function typeSorter(t1,t2) {
+  //    var pos1 = typeOrder.indexOf(t1[0])
+  //    var pos2 = typeOrder.indexOf(t2[0])
+  //    if( pos1 == -1 && pos2 == -1 ) {
+  //       if(t1[0] < t2[0]) return 1
+  //       else if(t1[0] > t2[0]) return -1
+  //       else return 0;
+  //    } else if( pos1 == -1 ) {
+  //       return 1
+  //    } else if( pos2 == -1) {
+  //       return -1
+  //    } else {
+  //       return pos1 - pos2;
+  //    }
+  // }
+  // return typesArray.sort(typeSorter);
 };
 
 /**

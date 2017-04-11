@@ -44,11 +44,9 @@ Blockly.Arduino['procedures_defreturn'] = function(block) {
   // Get arguments with type
   var args = [];
   for (var x = 0; x < block.arguments_.length; x++) {
-    args[x] =
-        Blockly.Arduino.getArduinoType_(block.arguments_[x].type) +
-        ' ' +
-        Blockly.Arduino.variableDB_.getName(block.arguments_[x].name,
-            Blockly.Variables.NAME_TYPE);
+    args[x] = Blockly.Arduino.getArduinoTypeDecl(block.arguments_[x].type,
+                                                 block.arguments_[x].name,
+                                                 Blockly.Arduino.variableDB_);
   }
 
   // Get return type
@@ -56,7 +54,7 @@ Blockly.Arduino['procedures_defreturn'] = function(block) {
   if (block.getReturnType) {
     returnType = block.getReturnType();
   }
-  returnType = Blockly.Arduino.getArduinoType_(returnType);
+  returnType = Blockly.Arduino.getArduinoBasicType(returnType);
 
   // Construct code
   var code = returnType + ' ' + funcName + '(' + args.join(', ') + ') {\n' +
@@ -140,22 +138,14 @@ Blockly.Arduino['procedures_ifreturn'] = function(block) {
  */
 Blockly.Arduino['arduino_functions'] = function(block) {
   // Edited version of Blockly.Generator.prototype.statementToCode
-  function statementToCodeNoTab(block, name) {
-    var targetBlock = block.getInputTargetBlock(name);
-    var code = Blockly.Arduino.blockToCode(targetBlock);
-    if (!goog.isString(code)) {
-      throw 'Expecting code from statement block "' + targetBlock.type + '".';
-    }
-    return code;
-  }
 
-  var setupBranch = Blockly.Arduino.statementToCode(block, 'SETUP_FUNC');
+  var setupBranch = Blockly.Arduino.statementToCppBlock(block, 'SETUP_FUNC');
   //var setupCode = Blockly.Arduino.scrub_(block, setupBranch); No comment block
   if (setupBranch) {
     Blockly.Arduino.addSetup('userSetupCode', setupBranch, true);
   }
 
-  var loopBranch = statementToCodeNoTab(block, 'LOOP_FUNC');
+  var loopBranch = Blockly.Arduino.statementToCppBlock(block, 'LOOP_FUNC',true);
   //var loopcode = Blockly.Arduino.scrub_(block, loopBranch); No comment block
   return loopBranch;
 };

@@ -243,14 +243,13 @@ Blockly.Generator.prototype.valueToCode = function(block, name, order) {
  * @param {string} name The name of the input.
  * @return {string} Generated code or '' if no blocks are connected.
  */
-Blockly.Generator.prototype.statementToCode = function(block, name) {
+Blockly.Generator.prototype.statementToCode = function(block, name, noTab = false) {
   var targetBlock = block.getInputTargetBlock(name);
-  var code = this.blockToCode(targetBlock);
-  // Value blocks must return code and order of operations info.
-  // Statement blocks must only return code.
-  goog.asserts.assertString(code, 'Expecting code from statement block "%s".',
-      targetBlock && targetBlock.type);
-  if (code) {
+  var code = Blockly.Arduino.blockToCode(targetBlock);
+  if (!goog.isString(code)) {
+    throw 'Expecting code from statement block "' + targetBlock.type + '".';
+  }
+  if (code && !noTab ) {
     code = this.prefixLines(/** @type {string} */ (code), this.INDENT);
   }
   return code;

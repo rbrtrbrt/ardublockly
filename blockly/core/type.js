@@ -21,7 +21,8 @@ goog.require('goog.asserts');
  * @constructor
  */
 Blockly.Type = function(args) {
-  if ((args.typeId === undefined) || (args.typeMsgName === undefined) ||
+  if ((args.typeId === undefined) ||
+      ((args.typeMsgName === undefined) && (args.typeUIString === undefined)) ||
       (args.compatibleTypes === undefined)) {
     throw new Error('Creating a Type requires the following format:\n{\n' +
                     '  typeId: string,\n' +
@@ -40,6 +41,7 @@ Blockly.Type = function(args) {
    * This is the translatable Blockly.Msg member string name.
    * @private
    */
+  this.arraySize = args.arraySize; // undefined = not an array; 0 = array of undetermined size;
   this.typeMsgName_ = args.typeMsgName;
   /**
    * @type {Array<Blockly.Type>}

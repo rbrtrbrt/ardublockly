@@ -43,11 +43,16 @@ Blockly.Variables.allGlobalVariables = function(workspace, includeEmptyNames = f
    var globals        = [];
    for (var idx = 0; idx < blocks.length; idx++) {
       var b = blocks[idx];
-      if( b.type === 'variables_global' || b.type === 'variables_global_init' ) {
-         var gName = b.getFieldValue('VARNAME');
-         var gType = Blockly.Types[b.getFieldValue('VARTYPE')];
-         if( gName || includeEmptyNames ) {
-            globals.push({block:b, name:gName, type: gType});
+      if( b.type === 'variables_global' ||
+          b.type === 'variables_global_init' ||
+          b.type === 'array_global' ||
+          b.type === 'array_global_init' ) {
+          var varInfo = b.getVarInfo()
+          varInfo.block = b;
+        //  var gName = b.getFieldValue('VARNAME');
+        //  var gType = Blockly.Types[b.getFieldValue('VARTYPE')];
+         if( varInfo.name || includeEmptyNames ) {
+            globals.push(varInfo);
          }
       }
    }
@@ -70,11 +75,13 @@ Blockly.Variables.collectAllLocalVariablesInScope = function(startBlock) {
 Blockly.Variables.collectLocalVariables = function(block) {
   var locals = [];
   while(block) {
-    if( block.type == "variables_local" || block.type == "variables_local_init") {
-      locals.push({ name:  block.getFieldValue('VARNAME'),
-                    type:  Blockly.Types[block.getFieldValue('VARTYPE')],
-                    block: block
-                  });
+    if( block.type == "variables_local" ||
+        block.type == "variables_local_init" ||
+        block.type == "array_local" ||
+        block.type == "array_local_init" ) {
+      var varInfo = block.getVarInfo();
+      varInfo.block = block
+      locals.push( varInfo );
     }
     block = block.getNextBlock();
   }
@@ -124,7 +131,6 @@ Blockly.Variables.allVariables = function(root) {
  * @param {!Blockly.Workspace} workspace Workspace rename variables in.
  */
 Blockly.Variables.renameGlobalVariable = function(oldName, newName, workspace) {
-  console.log("B.V.rGV:", oldName,newName, workspace);
   Blockly.Events.setGroup(true);
   var blocks = workspace.getTopBlocks();
   // Iterate through every block.
@@ -142,7 +148,6 @@ Blockly.Variables.renameGlobalVariable = function(oldName, newName, workspace) {
 Blockly.Variables.renameLocalVariable = function(oldName, newName, declBlock) {
   Blockly.Events.setGroup(true);
     var result = declBlock.getSurroundParent(true);
-    console.log("::1 renameLocalVariable:", result)
     var [scopeBlock,inputName] = result;
     if(scopeBlock) {
       var statements = scopeBlock.getInputTargetBlock(inputName);
@@ -167,7 +172,6 @@ Blockly.Variables.renameVarInStatements = function(statementStart, oldName, newN
 Blockly.Variables.globalRenameValidator = function(newName) {
   newName = newName.replace(/^[\s\xa0]+|[\s\xa0]+$/g, '');
   newName = Blockly.Variables.findLegalName(newName, this.sourceBlock_);
-  // Rename any callers.  console.log("GLOBAL RENAME", newName);
   if(newName == this.text_) { return newName}
   Blockly.Variables.renameGlobalVariable(this.text_, newName, this.sourceBlock_.workspace);
   return newName;
@@ -315,8 +319,8 @@ Blockly.Variables.isLegalName = function(name, workspace, opt_exclude) {
     if (blocks[i] == opt_exclude) {
       continue;
     }
-    if (blocks[i].getVarName) {
-      var varName = blocks[i].getVarName();
+    if (blocks[i].getVarInfo) {
+      var varName = blocks[i].getVarInfo().name;
       if (Blockly.Names.equals(varName, name)) {
         return false;
       }

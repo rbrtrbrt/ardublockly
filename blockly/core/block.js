@@ -689,17 +689,13 @@ Blockly.Block.prototype.renameVar = function(oldName, newName) {
     }
     var inputBlock = input && input.connection && input.connection.targetBlock();
     if(!inputBlock) {
-      console.log("RENAME_VAR: no Input Value!", input.name, input, input && input.connection, input && input.connection && input.connection.targetBlock.type);
       continue;
     }
     if(input.type == Blockly.INPUT_VALUE) {
-      console.log("RENAME_VAR: INPUT_VALUE", inputBlock.type);
       inputBlock.renameVar(oldName,newName);
     } else if (input.type = Blockly.NEXT_STATEMENT) {
-      console.log("RENAME_VAR: NEXT_STATEMENT", input.type);
       Blockly.Variables.renameVarInStatements(inputBlock, oldName, newName);
     } else {
-      console.log("RENAME_VAR: unknown input-type:", input.type);
     }
   }
 };

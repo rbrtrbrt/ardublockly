@@ -242,7 +242,6 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     }
     for(var idx in this.paramIds_) {
       if( oldArgs[this.paramIds_[idx]] && oldArgs[this.paramIds_[idx]].name !== this.arguments_[idx].name) {
-        console.log("!!!!! DETECTED ARGNAME CHANGE:", oldArgs[this.paramIds_[idx]].name, "=>", this.arguments_[idx].name);
         var statements = this.getInputTargetBlock('STACK');
         Blockly.Variables.renameVarInStatements(statements, oldArgs[this.paramIds_[idx]].name, this.arguments_[idx].name)
       }

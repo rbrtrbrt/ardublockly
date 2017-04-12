@@ -141,6 +141,7 @@ Ardublockly.TOOLBOX_XML =
 '  <category colour="290" id="catFunctions" name="Functions" custom="PROCEDURE"></category>' +
 '  <sep></sep>' +
 '  <category colour="250" id="catInputOutput" name="Input/Output">' +
+'    <block type="io_pinname"></block>' +
 '    <block type="io_highlow"></block>' +
 '    <block type="io_digitalwrite">' +
 '      <value name="STATE">' +

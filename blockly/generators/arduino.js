@@ -454,3 +454,39 @@ Blockly.Arduino.statementToCppBlock = function(block, name, noTab = false) {
   }
   return localVars + code;
 };
+
+Blockly.Arduino.getPinNameBlocks = function(workspace) {
+    return workspace.getTopBlocks().filter( b => b.type == "io_pinname")
+}
+Blockly.Arduino.getPinNameLookup = function(workspace) {
+    var thePinBlocks = Blockly.Arduino.getPinNameBlocks(workspace)
+    console.log("GET PIN NAMES: TOP BLOCKS", thePinBlocks);
+    var theLookup = {}
+    thePinBlocks.forEach(block => {
+      var pinCode = block.getFieldValue('PINCODE');
+      var pinName = block.getFieldValue('PINNAME');
+      console.log("GET PIN NAMES: BLOCK", pinCode, pinName, block);
+      if( pinCode != undefined && pinCode !== "" ) {
+        theLookup[pinCode] = pinName || pinCode;
+      }
+    });
+    console.log("PIN NAME LOOKUP:", theLookup);
+    return theLookup;
+}
+Blockly.Arduino.pinMenuMaker = function(pinType, workspace, useNames = true, filterNamedPins = false) {  // pinType = 'digitalPins'|'analogPins'|'pwmPins'
+  return function() {
+    var thePins = Blockly.Arduino.Boards.selected[pinType];
+    console.log("PINS:", thePins);
+    if(useNames || filterNamedPins ) {
+      var nameLookup = Blockly.Arduino.getPinNameLookup(workspace);
+    }
+    if(filterNamedPins) {
+      thePins = thePins.filter( ([pinCode,_])=> nameLookup[pinCode] == undefined)
+    }
+    if(useNames) {
+      thePins = thePins.map(([pinCode,_])=>[nameLookup[pinCode]||pinCode, pinCode]);
+    }
+    console.log("PIN MENU",useNames,filterNamedPins, thePins.map(([p,_])=> p) );
+    return thePins;
+  }
+}

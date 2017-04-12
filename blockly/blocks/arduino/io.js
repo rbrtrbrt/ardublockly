@@ -20,6 +20,21 @@ goog.require('Blockly.Types');
 /** Common HSV hue for all blocks in this category. */
 Blockly.Blocks.io.HUE = 250;
 
+Blockly.Blocks['io_pinname'] = {
+  init: function() {
+    var nameField = new Blockly.FieldTextInput("")
+    this.appendDummyInput()
+      .appendField("pin #")
+      .appendField(new Blockly.FieldDropdown(
+          Blockly.Arduino.pinMenuMaker('digitalPins', this.workspace,false,true)), 'PINCODE')
+      .appendField("has name")
+      .appendField(nameField,'PINNAME')
+    this.setColour(Blockly.Blocks.io.HUE);
+  },
+  canBeRoot: true
+}
+
+
 Blockly.Blocks['io_digitalwrite'] = {
   /**
    * Block for creating a 'set pin' to a state.
@@ -31,7 +46,7 @@ Blockly.Blocks['io_digitalwrite'] = {
     this.appendValueInput('STATE')
         .appendField(Blockly.Msg.ARD_DIGITALWRITE)
         .appendField(new Blockly.FieldDropdown(
-            Blockly.Arduino.Boards.selected.digitalPins), 'PIN')
+            Blockly.Arduino.pinMenuMaker('digitalPins', this.workspace,true)), 'PIN')
         .appendField(Blockly.Msg.ARD_WRITE_TO)
         .setCheck(Blockly.Types.BOOLEAN.checkList);
     this.setInputsInline(false);
@@ -60,22 +75,15 @@ Blockly.Blocks['io_digitalread'] = {
     this.appendDummyInput()
         .appendField(Blockly.Msg.ARD_DIGITALREAD)
         .appendField(new Blockly.FieldDropdown(
-            Blockly.Arduino.Boards.selected.digitalPins), 'PIN');
+            Blockly.Arduino.pinMenuMaker('digitalPins', this.workspace,true)), 'PIN')
     this.setOutput(true, Blockly.Types.BOOLEAN.output);
-    this.setTooltip(Blockly.Msg.ARD_DIGITALREAD_TIP);
+    this.canBeRoot = true;
   },
-  /** @return {!string} The type of return value for the block, an integer. */
-  getBlockType: function() {
-    return Blockly.Types.BOOLEAN;
-  },
-  /**
-   * Updates the content of the the pin related fields.
-   * @this Blockly.Block
-   */
   updateFields: function() {
     Blockly.Arduino.Boards.refreshBlockFieldDropdown(
         this, 'PIN', 'digitalPins');
   }
+
 };
 
 Blockly.Blocks['io_builtin_led'] = {
@@ -122,7 +130,7 @@ Blockly.Blocks['io_analogwrite'] = {
     this.appendValueInput('NUM')
         .appendField(Blockly.Msg.ARD_ANALOGWRITE)
         .appendField(new Blockly.FieldDropdown(
-            Blockly.Arduino.Boards.selected.pwmPins), 'PIN')
+            Blockly.Arduino.pinMenuMaker('pwmPins', this.workspace,true)), 'PIN')
         .appendField(Blockly.Msg.ARD_WRITE_TO)
         .setCheck(Blockly.Types.NUMBER.output);
     this.setInputsInline(false);
@@ -154,7 +162,7 @@ Blockly.Blocks['io_analogread'] = {
     this.appendDummyInput()
         .appendField(Blockly.Msg.ARD_ANALOGREAD)
         .appendField(new Blockly.FieldDropdown(
-            Blockly.Arduino.Boards.selected.analogPins), 'PIN');
+            Blockly.Arduino.pinMenuMaker('analogPins', this.workspace,true)), 'PIN');
     this.setOutput(true, Blockly.Types.NUMBER.output);
     this.setTooltip(Blockly.Msg.ARD_ANALOGREAD_TIP);
   },

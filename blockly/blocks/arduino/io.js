@@ -22,7 +22,7 @@ Blockly.Blocks.io.HUE = 250;
 
 Blockly.Blocks['io_pinname'] = {
   init: function() {
-    var nameField = new Blockly.FieldTextInput("")
+    var nameField = new Blockly.FieldTextInput("",Blockly.Arduino.pinRenameValidator)
     this.appendDummyInput()
       .appendField("pin #")
       .appendField(new Blockly.FieldDropdown(
@@ -61,6 +61,11 @@ Blockly.Blocks['io_digitalwrite'] = {
   updateFields: function() {
     Blockly.Arduino.Boards.refreshBlockFieldDropdown(
         this, 'PIN', 'digitalPins');
+  },
+  renamePin: function(pinCode, newName) {
+    if(this.getFieldValue('PIN') == pinCode) {
+      this.getField('PIN').setText(newName);
+    }
   }
 };
 
@@ -82,8 +87,8 @@ Blockly.Blocks['io_digitalread'] = {
   updateFields: function() {
     Blockly.Arduino.Boards.refreshBlockFieldDropdown(
         this, 'PIN', 'digitalPins');
-  }
-
+  },
+  renamePin: Blockly.Blocks['io_digitalwrite'].renamePin
 };
 
 Blockly.Blocks['io_builtin_led'] = {
@@ -149,6 +154,7 @@ Blockly.Blocks['io_analogwrite'] = {
   getBlockType: function() {
     return Blockly.Types.NUMBER;
   },
+  renamePin: Blockly.Blocks['io_digitalwrite'].renamePin
 };
 
 Blockly.Blocks['io_analogread'] = {
@@ -176,7 +182,8 @@ Blockly.Blocks['io_analogread'] = {
    */
   updateFields: function() {
     Blockly.Arduino.Boards.refreshBlockFieldDropdown(this, 'PIN', 'analogPins');
-  }
+  },
+  renamePin: Blockly.Blocks['io_digitalwrite'].renamePin
 };
 
 Blockly.Blocks['io_highlow'] = {

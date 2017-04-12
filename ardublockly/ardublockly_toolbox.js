@@ -82,16 +82,18 @@ Ardublockly.TOOLBOX_XML =
 '    <block type="math_random_int">' +
 '      <value name="FROM">' +
 '        <block type="math_number">' +
-'          <field name="NUM">1</field>' +
-'        </block>' +
-'      </value>' +
-'      <value name="TO">' +
-'        <block type="math_number">' +
-'          <field name="NUM">100</field>' +
+'          <field name="NUM">0</field>' +
 '        </block>' +
 '      </value>' +
 '    </block>' +
-'    <block type="math_random_float"></block>' +
+'    <block type="math_random_seed">' +
+'      <value name="SEED">' +
+'        <block type="io_analogread">' +
+'          <field name="PIN">A5</field>' +
+'        </block>' +
+'      </value>' +
+'    </block>' +
+// '    <block type="math_random_float"></block>' +
 // '    <block type="base_map"></block>' +
 '    <block type="full_map">' +
 '      <value name="ORIGINMIN">' +
@@ -125,6 +127,7 @@ Ardublockly.TOOLBOX_XML =
 '    <block type="variables_global"></block>' +
 '    <block type="variables_global_init"></block>' +
 '    <block type="variables_get"></block>' +
+'    <block type="math_change"></block>' +
 '    <block type="variables_set"></block>' +
 '    <block type="variables_local"></block>' +
 '    <block type="variables_local_init"></block>' +
@@ -172,18 +175,18 @@ Ardublockly.TOOLBOX_XML =
 '    <block type="time_micros"></block>' +
 '    <block type="infinite_loop"></block>' +
 '  </category>' +
-'  <sep></sep>' +
-'  <category colour="250" id="catAudio" name="Audio">' +
-'    <block type="io_tone">' +
-'      <field name="TONEPIN">0</field>' +
-'      <value name="FREQUENCY">' +
-'        <shadow type="math_number">' +
-'          <field name="NUM">220</field>' +
-'        </shadow>' +
-'      </value>' +
-'    </block>' +
-'    <block type="io_notone"></block>' +
-'  </category>' +
+// '  <sep></sep>' +
+// '  <category colour="250" id="catAudio" name="Audio">' +
+// '    <block type="io_tone">' +
+// '      <field name="TONEPIN">0</field>' +
+// '      <value name="FREQUENCY">' +
+// '        <shadow type="math_number">' +
+// '          <field name="NUM">220</field>' +
+// '        </shadow>' +
+// '      </value>' +
+// '    </block>' +
+// '    <block type="io_notone"></block>' +
+// '  </category>' +
 // '  <sep></sep>' +
 // '  <category colour="80" id="catMotors" name="Motors">' +
 // '    <block type="servo_write">' +

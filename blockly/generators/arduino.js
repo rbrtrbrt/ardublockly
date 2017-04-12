@@ -490,3 +490,25 @@ Blockly.Arduino.pinMenuMaker = function(pinType, workspace, useNames = true, fil
     return thePins;
   }
 }
+Blockly.Arduino.pinRenameValidator = function(newName) {
+  newName = newName.replace(/^[\s\xa0]+|[\s\xa0]+$/g, '');
+  if(newName == this.text_) { return newName }
+  var pinCode = this.sourceBlock_.getFieldValue('PINCODE');
+  if(pinCode == undefined || pinCode == "") {
+    return newName;
+  }
+  Blockly.Arduino.renamePin(pinCode, newName, this.sourceBlock_.workspace);
+}
+Blockly.Arduino.renamePin = function(pinCode, newName, workspace) {
+  if(newName == "") {
+    newName = pinCode;
+  }
+  Blockly.Events.setGroup(true);
+  var blocks = workspace.getAllBlocks();
+  // Iterate through every block.
+  for (var i = 0; i < blocks.length; i++) {
+    if(blocks[i].renamePin)
+      blocks[i].renamePin(pinCode, newName);
+  }
+  Blockly.Events.setGroup(false);
+};

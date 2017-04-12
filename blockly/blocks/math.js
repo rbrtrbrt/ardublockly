@@ -340,7 +340,7 @@ Blockly.Blocks['math_change'] = {
         {
           "type": "field_variable",
           "name": "VAR",
-          "variable": Blockly.Msg.MATH_CHANGE_TITLE_ITEM
+          "variable": ''
         },
         {
           "type": "input_value",
@@ -351,7 +351,7 @@ Blockly.Blocks['math_change'] = {
       ],
       "previousStatement": null,
       "nextStatement": null,
-      "colour": Blockly.Blocks.math.HUE,
+      "colour":  Blockly.Blocks.variables.HUE,
       "helpUrl": Blockly.Msg.MATH_CHANGE_HELPURL
     });
     // Assign 'this' to a variable for use in the tooltip closure below.
@@ -553,6 +553,16 @@ Blockly.Blocks['math_constrain'] = {
   }
   //TODO: a getBlockType of the same type as the inputs.
 };
+Blockly.Blocks['math_random_seed'] = {
+  init: function() {
+    this.appendValueInput('SEED')
+        .appendField("seed Random with:");
+    this.setNextStatement(true);
+    this.setPreviousStatement(true);
+    this.setColour(Blockly.Blocks.math.HUE);
+
+  },
+}
 
 Blockly.Blocks['math_random_int'] = {
   /**

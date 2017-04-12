@@ -311,27 +311,42 @@ Blockly.Arduino['math_constrain'] = function(block) {
  * @param {!Blockly.Block} block Block to generate the code from.
  * @return {array} Completed code with order of operation.
  */
+// Blockly.Arduino['math_random_int'] = function(block) {
+//   var argument0 = Blockly.Arduino.valueToCode(block, 'FROM',
+//       Blockly.Arduino.ORDER_NONE) || '0';
+//   var argument1 = Blockly.Arduino.valueToCode(block, 'TO',
+//       Blockly.Arduino.ORDER_NONE) || '1';
+//   var functionName = Blockly.Arduino.variableDB_.getDistinctName(
+//       'math_random_int', Blockly.Generator.NAME_TYPE);
+//   Blockly.Arduino.math_random_int.random_function = functionName;
+//   var func = [
+//       'int ' + Blockly.Arduino.DEF_FUNC_NAME + '(int min, int max) {',
+//       '  if (min > max) {',
+//       '    // Swap min and max to ensure min is smaller.',
+//       '    int temp = min;',
+//       '    min = max;',
+//       '    max = temp;',
+//       '  }',
+//       '  return min + (rand() % (max - min + 1));',
+//       '}'];
+//   var funcName = Blockly.Arduino.addFunction('mathRandomInt', func.join('\n'));
+//   var code = funcName + '(' + argument0 + ', ' + argument1 + ')';
+//   return [code, Blockly.Arduino.ORDER_UNARY_POSTFIX];
+// };
 Blockly.Arduino['math_random_int'] = function(block) {
   var argument0 = Blockly.Arduino.valueToCode(block, 'FROM',
       Blockly.Arduino.ORDER_NONE) || '0';
   var argument1 = Blockly.Arduino.valueToCode(block, 'TO',
-      Blockly.Arduino.ORDER_NONE) || '0';
-  var functionName = Blockly.Arduino.variableDB_.getDistinctName(
-      'math_random_int', Blockly.Generator.NAME_TYPE);
-  Blockly.Arduino.math_random_int.random_function = functionName;
-  var func = [
-      'int ' + Blockly.Arduino.DEF_FUNC_NAME + '(int min, int max) {',
-      '  if (min > max) {',
-      '    // Swap min and max to ensure min is smaller.',
-      '    int temp = min;',
-      '    min = max;',
-      '    max = temp;',
-      '  }',
-      '  return min + (rand() % (max - min + 1));',
-      '}'];
-  var funcName = Blockly.Arduino.addFunction('mathRandomInt', func.join('\n'));
-  var code = funcName + '(' + argument0 + ', ' + argument1 + ')';
+      Blockly.Arduino.ORDER_NONE) || '1';
+  var code = 'random(' + argument0 + ', ' + argument1 + ')';
   return [code, Blockly.Arduino.ORDER_UNARY_POSTFIX];
+};
+
+Blockly.Arduino['math_random_seed'] = function(block) {
+  var argument0 = Blockly.Arduino.valueToCode(block, 'SEED',
+      Blockly.Arduino.ORDER_NONE) || '0';
+  var code = 'randomSeed(' + argument0 + ')';
+  return code;
 };
 
 /**

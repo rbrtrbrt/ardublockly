@@ -20,12 +20,29 @@ goog.require('Blockly.Arduino');
  * @param {!Blockly.Block} block Block to generate the code from.
  * @return {array} Completed code with order of operation.
  */
-Blockly.Arduino['base_map'] = function(block) {
-  var valueNum = Blockly.Arduino.valueToCode(
-      block, 'NUM', Blockly.Arduino.ORDER_NONE) || '0';
-  var valueDmax = Blockly.Arduino.valueToCode(
-      block, 'DMAX', Blockly.Arduino.ORDER_ATOMIC) || '0';
+ Blockly.Arduino['base_map'] = function(block) {
+   var valueNum = Blockly.Arduino.valueToCode(
+       block, 'NUM', Blockly.Arduino.ORDER_NONE) || '0';
+   var valueDmax = Blockly.Arduino.valueToCode(
+       block, 'DMAX', Blockly.Arduino.ORDER_ATOMIC) || '0';
 
-  var code = 'map(' + valueNum + ', 0, 1024, 0, ' + valueDmax + ')';
-  return [code, Blockly.Arduino.ORDER_NONE];
-};
+   var code = 'map(' + valueNum + ', 0, 1024, 0, ' + valueDmax + ')';
+   return [code, Blockly.Arduino.ORDER_NONE];
+ };
+ Blockly.Arduino['full_map'] = function(block) {
+   var valueNum = Blockly.Arduino.valueToCode(
+       block, 'NUM', Blockly.Arduino.ORDER_NONE) || '0';
+       var originMin = Blockly.Arduino.valueToCode(
+           block, 'ORIGINMIN', Blockly.Arduino.ORDER_ATOMIC) || '0';
+       var originMax = Blockly.Arduino.valueToCode(
+           block, 'ORIGINMAX', Blockly.Arduino.ORDER_ATOMIC) || '0';
+       var destMin = Blockly.Arduino.valueToCode(
+           block, 'DESTMIN', Blockly.Arduino.ORDER_ATOMIC) || '0';
+       var destMax = Blockly.Arduino.valueToCode(
+           block, 'DESTMAX', Blockly.Arduino.ORDER_ATOMIC) || '0';
+
+   var code = 'map(' + valueNum+', ' +
+                       originMin+', ' + originMax+', ' +
+                       destMin+', ' + destMax + ')';
+   return [code, Blockly.Arduino.ORDER_NONE];
+ };

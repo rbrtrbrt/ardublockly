@@ -42,6 +42,8 @@ Blockly.Blocks['serial_setup'] = {
         .appendField(Blockly.Msg.ARD_SERIAL_BPS);
     this.setInputsInline(true);
     this.setTooltip(Blockly.Msg.ARD_SERIAL_SETUP_TIP);
+    this.setFieldValue('9600', 'SPEED');
+    this.canBeRoot = true;
   },
   /**
    * Returns the serial instance name.
@@ -76,7 +78,7 @@ Blockly.Blocks['serial_print'] = {
                 Blockly.Arduino.Boards.selected.serial), 'SERIAL_ID')
         .appendField(Blockly.Msg.ARD_SERIAL_PRINT);
     this.appendValueInput('CONTENT')
-        .setCheck(Blockly.Types.TEXT.checkList);
+    //    .setCheck(Blockly.Types.TEXT.checkList);
     this.appendDummyInput()
         .appendField(new Blockly.FieldCheckbox('TRUE'), 'NEW_LINE')
         .appendField(Blockly.Msg.ARD_SERIAL_PRINT_NEWLINE);
@@ -111,7 +113,7 @@ Blockly.Blocks['serial_print'] = {
     }
 
     if (!setupInstancePresent) {
-      this.setWarningText(Blockly.Msg.ARD_SERIAL_PRINT_WARN.replace('%1', 
+      this.setWarningText(Blockly.Msg.ARD_SERIAL_PRINT_WARN.replace('%1',
 			    thisInstanceName), 'serial_setup');
     } else {
       this.setWarningText(null, 'serial_setup');

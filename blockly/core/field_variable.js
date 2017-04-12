@@ -42,7 +42,8 @@ goog.require('goog.string');
  * @extends {Blockly.FieldDropdown}
  * @constructor
  */
-Blockly.FieldVariable = function(varname, opt_validator) {
+Blockly.FieldVariable = function(varname, opt_kind, opt_validator) {
+  this.kind = opt_kind;
   Blockly.FieldVariable.superClass_.constructor.call(this,
       this.dropdownCreate, opt_validator);
   this.setValue(varname || '');
@@ -130,14 +131,31 @@ Blockly.FieldVariable.prototype.dropdownCreate = function() {
   var variableList = []
   if (this.sourceBlock_ && this.sourceBlock_.workspace) {
     var locals = Blockly.Variables.collectAllLocalVariablesInScope(this.sourceBlock_);
+    if(this.kind == 'array') {
+      locals = locals.filter( lv => lv.type.isArray )
+    } else if(this.kind == 'basic') {
+      locals.forEach(lv => {
+      })
+      locals = locals.filter( lv => !lv.type.isArray )
+    }
     locals = locals.map(v=>[v.name,v.name]);
     variableList = variableList.concat(locals);
     var root = this.sourceBlock_.getRootBlock();
     if(root.getProcedureDef) {
       var params = root.getProcedureDef()[1];
+      if(this.kind == 'array') {
+        params = params.filter( p => p.type.isArray )
+      } else if(this.kind == 'basic') {
+        params = params.filter( p => !p.type.isArray )
+      }
       variableList = variableList.concat(params.map(p=>["input "+p.name,p.name]));
     }
     var globals = Blockly.Variables.allGlobalVariables(this.sourceBlock_.workspace);
+    if(this.kind == 'array') {
+      globals = globals.filter( gv => gv.type.isArray )
+    } else if(this.kind == 'basic') {
+      globals = globals.filter( gv => !gv.type.isArray )
+    }
     globals = globals.map(v=>["global "+v.name,v.name]);
     globals.sort(([a,b],[c,d])=> goog.string.caseInsensitiveCompare(b,d));
     variableList = variableList.concat(globals);

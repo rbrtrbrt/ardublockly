@@ -328,9 +328,6 @@ Blockly.Xml.domToBlock = function(xmlBlock, workspace) {
   // Create top-level block.
   Blockly.Events.disable();
   var topBlock = Blockly.Xml.domToBlockHeadless_(xmlBlock, workspace);
-  if(topBlock.afterCreation) { 
-     topBlock.afterCreation();
-  }
   if (workspace.rendered) {
     // Hide connections to speed up assembly.
     topBlock.setConnectionsHidden(true);
@@ -449,6 +446,8 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
           break;
         }
         field.setValue(xmlChild.textContent);
+        // nasty dirty little hack
+        if(name == 'ELEMENTTYPE' && block.updateShape) { block.updateShape(); }
         break;
       case 'value':
       case 'statement':

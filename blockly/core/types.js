@@ -117,7 +117,6 @@ Blockly.Types.LARGE_NUMBER.addCompatibleTypes([
 
 
 Blockly.Types.makeArrayType = function( type, size ) {
-  console.log("MAKE ARRAY TYPE", type, size);
   var typeId = size + "_ARRAY_OF_" + type.typeId
   if( Blockly.Types[typeId] ) {
     return Blockly.Types[typeId]

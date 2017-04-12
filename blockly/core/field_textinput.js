@@ -43,9 +43,10 @@ goog.require('goog.userAgent');
  * @extends {Blockly.Field}
  * @constructor
  */
-Blockly.FieldTextInput = function(text, opt_validator) {
+Blockly.FieldTextInput = function(text, opt_validator, changeHandler) {
   Blockly.FieldTextInput.superClass_.constructor.call(this, text,
       opt_validator);
+  this.changeHandler = changeHandler || function() {};
 };
 goog.inherits(Blockly.FieldTextInput, Blockly.Field);
 
@@ -271,6 +272,7 @@ Blockly.FieldTextInput.prototype.widgetDispose_ = function() {
       } else if (text1 !== undefined) {
         // Validation function has changed the text.
         text = text1;
+        thisField.changeHandler.call(this.sourceBlock_,text, htmlInput.defaultValue);
       }
     }
     thisField.setValue(text);

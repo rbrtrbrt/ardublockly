@@ -133,14 +133,18 @@ Blockly.Arduino.init = function(workspace) {
     var gType = globalsWithTypes[globalVar].type;
     var gBlock = globalsWithTypes[globalVar].block;
 
-    var initCode =
-        Blockly.Arduino.valueToCode(gBlock, 'VALUE', Blockly.Arduino.ORDER_ASSIGNMENT) ||
-            gType.defaultValue || ""
+    var initCode
+    if(gBlock.getInitCode) {
+      initCode = gBlock.getInitCode();
+    } else {
+      initCode =  Blockly.Arduino.valueToCode(gBlock, 'VALUE', Blockly.Arduino.ORDER_ASSIGNMENT) ||
+                  gType.defaultValue || ""
+    }
     if(initCode) {
         initCode = " = " + initCode;
      }
 
-  // Set variable declarations with their Arduino type in the defines dictionary
+    // Set variable declarations with their Arduino type in the defines dictionary
     var decl = Blockly.Arduino.getArduinoTypeDecl( gType, gName, Blockly.Arduino.variableDB_);
     Blockly.Arduino.addVariable(gName, decl + initCode+";");
   }
@@ -410,11 +414,10 @@ Blockly.Arduino.getArduinoBasicType = function(type) {
 }
 
 Blockly.Arduino.getArduinoTypeDecl = function(type, name, namespace) {
-    console.log("GET TYPEDECL", type.typeId, name);
     if( ! type.isArray ) {
-      return Blockly.Arduino.getArduinoBasicType(type) + " " + name;
-    } else {
       var codeName = namespace.getName(name, Blockly.Variables.NAME_TYPE);
+      return Blockly.Arduino.getArduinoBasicType(type) + " " + codeName;
+    } else {
       var decl = Blockly.Arduino.getArduinoTypeDecl(type.elementType,name, namespace)
       decl += "["+(type.arraySize||"")+"]"
       return decl;

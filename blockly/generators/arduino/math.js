@@ -345,7 +345,7 @@ Blockly.Arduino['math_random_int'] = function(block) {
 Blockly.Arduino['math_random_seed'] = function(block) {
   var argument0 = Blockly.Arduino.valueToCode(block, 'SEED',
       Blockly.Arduino.ORDER_NONE) || '0';
-  var code = 'randomSeed(' + argument0 + ')';
+  var code = 'randomSeed(' + argument0 + ');';
   return code;
 };
 

@@ -169,6 +169,50 @@ Blockly.Blocks['array_local'] = {
   }
 };
 
+Blockly.Blocks['array_local_init'] = {
+  /**
+   * Block for variable setter.
+   * @this Blockly.Block
+   */
+
+  init: function() {
+     var sizeChangeHandler = (text, prevText) => {
+       this.updateShape()
+     }
+     var nameField = new Blockly.FieldTextInput(
+        "var-name",
+        Blockly.Variables.globalRenameValidator);
+    nameField.setSpellcheck(false);
+    this.appendDummyInput()
+        .appendField("local array")
+        .appendField(nameField, "VARNAME")
+        .appendField("size:")
+        .appendField(
+            new Blockly.FieldNumber(
+                4, 1,null,1,sizeChangeHandler),
+            'SIZE');
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("element type:")
+        .appendField(new Blockly.FieldDropdown(
+                        Blockly.Types.getTypeMenuItems()),
+                    'ELEMENTTYPE')
+     this.setColour(Blockly.Blocks.arrays.HUE);
+     this.setTooltip("Create a local array.");
+     this.setInputsInline(true)
+     this.updateShape();
+//    this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
+  },
+  getVarInfo: Blockly.Blocks['array_global_init'].getVarInfo,
+  // contextMenuType_: 'variables_get',
+  // customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
+  updateWarnings: function() {
+  },
+  getInitCode: Blockly.Blocks['array_global_init'].getInitCode,
+  itemCount: Blockly.Blocks['array_global_init'].itemCount,
+  updateShape: Blockly.Blocks['array_global_init'].updateShape,
+};
+
 Blockly.Blocks['array_get'] = {
   /**
    * Block for variable getter.

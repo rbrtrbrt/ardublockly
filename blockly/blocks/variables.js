@@ -64,6 +64,7 @@ Blockly.Blocks['variables_get'] = {
     xmlField.setAttribute('name', 'VAR');
     var xmlBlock = goog.dom.createDom('block', null, xmlField);
     xmlBlock.setAttribute('type', this.contextMenuType_);
+    console.log("XML:", xmlBlock);
     option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
     options.push(option);
   },
@@ -99,6 +100,7 @@ Blockly.Blocks['variables_set'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(Blockly.Blocks.variables.HUE);
+    this.contextMenuMsg_ = Blockly.Msg.VARIABLES_SET_CREATE_GET;
   },
   contextMenuType_: 'variables_get',
   customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
@@ -198,6 +200,27 @@ Blockly.Blocks['variables_global_init'] = {
      } else {
         this.setWarningText(null,"CHILD_MISSING");
      }
+  },
+  customContextMenu: function(options) {
+    var option = {enabled: true};
+    var vname = this.getFieldValue('VARNAME');
+    option.text = 'create "get '+vname+'"';
+    var xmlField = goog.dom.createDom('field', null, vname);
+    xmlField.setAttribute('name', 'VAR');
+    var xmlBlock = goog.dom.createDom('block', null, xmlField);
+    xmlBlock.setAttribute('type', 'variables_get');
+    console.log("XML:", xmlBlock);
+    option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
+    options.push(option);
+    var option = {enabled: true};
+    option.text = 'create "set '+vname+'"';
+    var xmlField = goog.dom.createDom('field', null, vname);
+    xmlField.setAttribute('name', 'VAR');
+    var xmlBlock = goog.dom.createDom('block', null, xmlField);
+    xmlBlock.setAttribute('type', 'variables_set');
+    console.log("XML2:", xmlBlock);
+    option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
+    options.push(option);
   }
 };
 Blockly.Blocks['variables_local'] = {
@@ -257,7 +280,8 @@ Blockly.Blocks['variables_local_init'] = {
      this.setPreviousStatement(true);
      this.setNextStatement(true);
   },
-  getVarInfo:    Blockly.Blocks['variables_local'].getVarInfo,
+  getVarInfo:         Blockly.Blocks['variables_local'].getVarInfo,
+  customContextMenu:  Blockly.Blocks['variables_global_init'].customContextMenu,
 //  contextMenuType_: 'variables_get',
 //  customContextMenu: Blockly.Blocks['variables_get'].customContextMenu,
   // /**

@@ -59,22 +59,28 @@ Blockly.Variables.allGlobalVariables = function(workspace, includeEmptyNames = f
    return globals
 }
 
-Blockly.Variables.collectAllLocalVariablesInScope = function(startBlock) {
+Blockly.Variables.collectAllLocalVariablesInScope = function(sourceBlock) {
+  console.log("CALVIS:", sourceBlock.type);
   var vars = []
-  var result = startBlock.getSurroundParent(true);
+  var result = sourceBlock.getSurroundParent(true);
   var [scopeBlock,inputName] = result;
   while(scopeBlock) {
-    result = Blockly.Variables.collectLocalVariables(scopeBlock.getInputTargetBlock(inputName));
+    console.log("CALVIS LOOP:", scopeBlock.type, inputName, sourceBlock?sourceBlock.type:"undef");
+    result = Blockly.Variables.collectLocalVariables(scopeBlock.getInputTargetBlock(inputName), sourceBlock);
+    console.log("CALVIS LOOP2:", result);
     vars = vars.concat(result);
     result = scopeBlock.getSurroundParent(true);
+    sourceBlock = scopeBlock;
     [scopeBlock,inputName] = result;
   }
   return vars;
 }
 
-Blockly.Variables.collectLocalVariables = function(block) {
+Blockly.Variables.collectLocalVariables = function(block, uptoBlock) {
   var locals = [];
   while(block) {
+    console.log("CLV:", block.type, uptoBlock?uptoBlock.type:"undef", block == uptoBlock);
+    if(block == uptoBlock) break;
     if( block.type == "variables_local" ||
         block.type == "variables_local_init" ||
         block.type == "array_local" ||
@@ -85,6 +91,7 @@ Blockly.Variables.collectLocalVariables = function(block) {
     }
     block = block.getNextBlock();
   }
+  console.log("CLV: done.", locals);
   return locals;
 }
 

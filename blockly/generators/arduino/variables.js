@@ -58,4 +58,14 @@ Blockly.Arduino['variables_set'] = function(block) {
 Blockly.Arduino['variables_global'] = Blockly.Arduino.noGeneratorCodeLine;
 Blockly.Arduino['variables_global_init'] = Blockly.Arduino.noGeneratorCodeLine;
 Blockly.Arduino['variables_local'] = Blockly.Arduino.noGeneratorCodeLine;
-Blockly.Arduino['variables_local_init'] = Blockly.Arduino.noGeneratorCodeLine;
+Blockly.Arduino['variables_local_init'] = function(block) {
+    var varInf = block.getVarInfo();
+    var {name,type} = varInf;
+    var initCode =
+        Blockly.Arduino.valueToCode(block, 'VALUE', Blockly.Arduino.ORDER_ASSIGNMENT) ||
+            type.defaultValue || ""
+    if(initCode) {
+        initCode = " = " + initCode;
+     }
+     return Blockly.Arduino.getArduinoTypeDecl(type, name, Blockly.Arduino.variableDB_) + initCode+';\n'
+};

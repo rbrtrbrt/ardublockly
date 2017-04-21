@@ -32,7 +32,11 @@ Blockly.Arduino['array_set'] = function(block) {
   return arrName +'['+index+']' + ' = ' + value + ';\n';
 };
 
-
 Blockly.Arduino['array_global'] = Blockly.Arduino.noGeneratorCodeLine;
 Blockly.Arduino['array_global_init'] = Blockly.Arduino.noGeneratorCodeLine;
-Blockly.Arduino['array_local'] = Blockly.Arduino.noGeneratorCodeLine;
+Blockly.Arduino['array_local'] = function(block) {
+    var varInfo = block.getVarInfo();
+    var {name,type} = varInfo;
+    return Blockly.Arduino.getArduinoTypeDecl(type, name, Blockly.Arduino.variableDB_) + ';\n'
+};
+;
